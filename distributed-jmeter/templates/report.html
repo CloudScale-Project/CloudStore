@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="{% if error %}alert alert-danger{% endif %}">
+        {% if error %}
+            {{ error }}
+        {% else %}
+            Your request <b>{{ id }}</b> is being processed. Below you can see what's happening.
+            During setup, buttons are disabled and will become available after test is finished.
+        {% endif %}
+    </div>
+    {% if not error %}
+    <div class="row marketing">
+        <div class="log">
+        </div>
+        <div class="download-buttons">
+            <a href="/static/results/{{ id }}/scenario.jtl" id="download-jtl" class="btn disabled btn-success">
+               Download JTL file</a>
+            <a href="/static/results/{{ id }}/scenario.log" id="download-log" class="btn disabled btn-success">
+               Download LOG file
+            </a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block javascript %}
+<script src="https://code.jquery.com/jquery.js"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<script type="text/javascript">
+    timer = null
+    function doPoll(finish) {
+        $.getJSON('/check/{{ id }}', function (json) {
+            processData(json)
+            if (json['finished'] == 1)
+            {
+                clearTimeout(timer)
+                return
+            }
+            timer = setTimeout(doPoll, 2000)
+        })
+    }
+
+    function processData(data) {
+        if (data['error']) {
+            $('.jumbotron').addClass('alert alert-danger')
+            $('.jumbotron').html(data['error'])
+            return
+        }
+
+        if (data['finished'] == 1) {
+            $('#download-jtl').removeClass('disabled')
+            $('#download-log').removeClass('disabled')
+        }
+
+        $('.log').html('')
+        for (var i=0; i<data['log_msgs'].length; i++)
+        {
+            $('.log').append(data['log_msgs'][i] + '<br />')
+        }
+    }
+
+    $(document).ready(function () {
+        doPoll()
+    })
+</script>
+{% endblock %}

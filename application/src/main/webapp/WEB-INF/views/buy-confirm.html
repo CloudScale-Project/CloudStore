@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorator="/templates/layout">
+  <head>
+  	<title>Buy confirm</title>
+  </head>
+<body>
+<div layout:fragment="content">
+	<div th:if="${!errors.isEmpty()}" class="alert alert-error">
+		<div th:each="error : ${errors}" th:text="${error}">
+		</div>
+	</div>
+	<div th:unless="${!errors.isEmpty()}">
+		<h2 align="center">Buy confirm</h2>
+		<h2>Order information:</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						QTY
+					</th>
+					<th>
+						Product
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="line : ${results.cart.shoppingCartLines}">
+					<td th:text="${line.sclQty}">
+					</td>
+					<td>
+						Title: <i th:text="${line.item.ITitle}"></i> - Backing: 
+						<span th:text="${line.item.IBacking}"></span><br />
+						SRP. $<span th:text="${line.item.ISrp}"></span>
+						<span style="color: red;"><strong>Your Price: <span th:text="${line.item.ICost}"></span></strong></span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>Your order has been processed</h2>
+		<div class="pull-left myLabel">
+			Subtotal with discount:
+		</div>
+		<div class="pull-left content" th:text="${scSubTotal}">
+		</div>
+		<div class="clearfix"></div>
+		<div class="pull-left myLabel">
+			Tax (8.25%):
+		</div>
+		<div class="pull-left content" th:text="${scTax}">
+		</div>
+		<div class="clearfix"></div>
+		<div class="pull-left myLabel">
+			Shipping and Handling:
+		</div>
+		<div class="pull-left content" th:text="${scShipCost}">
+		</div>
+		<div class="clearfix"></div>
+		<div class="pull-left myLabel">
+			Total:
+		</div>
+		<div class="pull-left content" th:text="${scTotal}">
+		</div>
+		<div class="clearfix"></div>
+		<h2>Order Number: <span th:text="${results.order.OId}"></span></h2>
+		<h1>Thank you for shopping at TPC-W</h1>
+	</div>
+</div>
+</body>
+</html>

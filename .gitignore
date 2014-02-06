@@ -1,0 +1,6 @@
+*~
+*.pyc
+*.class
+application/target/
+deployment-scripts/software/showcase/target/
+distributed-jmeter/static/results/*

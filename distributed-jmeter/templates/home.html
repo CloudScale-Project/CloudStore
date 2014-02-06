@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>How to use it</h1>
+
+        <p class="lead">
+            Use <a href="http://jmeter.apache.org">JMeter GUI</a> to create scenario. Notice that your scenario must have <b><a href="http://jmeter.apache.org/usermanual/component_reference.html#Aggregate_Report">
+            Aggregate Report Listener</b></a> registered.<br /><br />
+            Then upload your JMeter script in form below and specify how many virtual users (VU) do you want per second.
+        </p>
+
+    </div>
+
+    <div class="row marketing">
+        {% if errors %}
+            {% for message in messages %}
+                {% if 'error' in message.tags %}
+                    <div class="alert alert-danger">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for message in messages %}
+                {% if 'success' in message.tags %}
+                    <div class="alert alert-success">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+                        {{ message|safe }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <form action="/upload" method="post" name="upload-form"
+                {% if form.is_multipart %} enctype="multipart/form-data" {% endif %} >
+            {% csrf_token %}
+            <div class="form-group form-scenario-upload">
+                <label for="id_scenario">Scenario</label>
+                <input type="file" id="scenarioUploadInput" class="form-control" name="scenario" />
+            </div>
+            <div class="clearfix"></div>
+            <input type="submit" class="btn btn-success" value="Submit" />
+        </form>
+    </div>
+{% endblock %}

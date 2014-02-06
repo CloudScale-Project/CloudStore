@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorator="/templates/layout">
+  <head>
+  	<title>Order inquiry</title>
+  </head>
+<body>
+<div layout:fragment="content">	
+	<div>
+		<form th:action="@{/order-display}" method="get" >
+			<fieldset>
+			<label>
+				Username:
+			</label>
+			<input name="username" type="text" />
+			<label>
+				Password:
+			</label>
+			<input name="password" type="password" />
+			<label></label>
+			<div th:if="${shoppingId}" >
+				<input type="hidden" name="SHOPPING_ID" th:value="${shoppingId}" />
+			</div>
+			<div th:if="${customerId}">
+				<input type="hidden" name="C_ID" th:value="${customerId}" />
+			</div>
+			<input class="btn" type="submit" value="Display last order" />
+		</fieldset>
+		</form>
+	</div>
+</div>
+</body>
+</html>
