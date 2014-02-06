@@ -1,0 +1,1 @@
+drek na palci

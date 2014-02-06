@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans.xsd 
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/data/mongo
+			http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+	<!-- More information: http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/mongo.core.html -->
+	<context:property-placeholder
+		location="classpath:database/database.aws.mongodb.properties" />
+	
+	<context:component-scan base-package="eu.cloudscale.showcase.db.dao.mongo.impl" />
+	
+	<mongo:mongo host="${mongodb.host}" port="${mongodb.port}" >
+		<mongo:options connections-per-host="100"
+                   threads-allowed-to-block-for-connection-multiplier="50"
+                   connect-timeout="1000"
+                   max-wait-time="2000"
+                   auto-connect-retry="true"
+                   socket-keep-alive="true"
+                   socket-timeout="2000"/>
+	</mongo:mongo>
+
+	<mongo:db-factory host="${mongodb.host}" port="${mongodb.port}"
+		dbname="${mongodb.dbname}" username="${mongodb.username}" password="${mongodb.password}" />
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+		
+	</bean>
+	<bean id="service" class="eu.cloudscale.showcase.db.services.MongoService">
+	</bean>
+</beans>
