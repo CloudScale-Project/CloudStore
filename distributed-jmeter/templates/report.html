@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block content %}
     <div class="{% if error %}alert alert-danger{% endif %}">
         {% if error %}
@@ -13,9 +14,9 @@
         <div class="log">
         </div>
         <div class="download-buttons">
-            <a href="/static/results/{{ id }}/scenario.jtl" id="download-jtl" class="btn disabled btn-success">
+            <a href="{{ url_prefix }}/static/results/{{ id }}/scenario.jtl" id="download-jtl" class="btn disabled btn-success">
                Download JTL file</a>
-            <a href="/static/results/{{ id }}/scenario.log" id="download-log" class="btn disabled btn-success">
+            <a href="{{ url_prefix }}/static/results/{{ id }}/scenario.log" id="download-log" class="btn disabled btn-success">
                Download LOG file
             </a>
         </div>
@@ -28,7 +29,7 @@
 <script type="text/javascript">
     timer = null
     function doPoll(finish) {
-        $.getJSON('/check/{{ id }}', function (json) {
+        $.getJSON('{{ url_prefix }}/check/{{ id }}', function (json) {
             processData(json)
             if (json['finished'] == 1)
             {

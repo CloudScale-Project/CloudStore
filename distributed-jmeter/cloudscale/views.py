@@ -7,11 +7,12 @@ import logging
 from cloudscale import models
 import json
 from django.core.mail import send_mail
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 def home(request):
-    return render(request, 'home.html', {'form' : forms.UploadScenarioForm()})
+    return render(request, 'home.html', {'form' : forms.UploadScenarioForm(), 'url_prefix' : settings.URL_PREFIX})
 
 def upload(request):
     errors = False
@@ -30,14 +31,14 @@ def upload(request):
                 errors = True
             else:
                 filename = handle_uploaded_file(request.FILES['scenario'])
-                start_test(filename, request.POST['virtual_users'])
+                start_test(filename)
         else:
             messages.error(request, "You didn't fill in the form!")
             errors = True
     else:
         return redirect('/')
 
-    messages.success(request, "Your scenario was successfully uploaded and started. Results are available <a href=\"http://localhost:8000/report/{0}\">here</a>".format(os.path.basename(filename)[:-4]))
+    messages.success(request, "Your scenario was successfully uploaded and started. Results are available <a href=\"{1}/report/{0}\">here</a>".format(os.path.basename(filename)[:-4], settings.URL_PREFIX))
     return render(request, 'home.html', {'form' : form, 'errors' : errors})
 
 def handle_uploaded_file(file):
@@ -50,7 +51,7 @@ def handle_uploaded_file(file):
     destination.close()
     return scenario_path
 
-def start_test(scenario_path, vu):
+def start_test(scenario_path):
     from tasks import run_tests
     userpath = "{0}/../static/results/{1}".format(os.path.abspath(os.path.dirname(__file__)), os.path.basename(scenario_path)[:-4])
     try:
@@ -59,14 +60,14 @@ def start_test(scenario_path, vu):
         if e.errno != 17:
             raise
         pass
-    run_tests.delay(scenario_path, vu)
+    run_tests.delay(scenario_path)
 
 def report(request, id):
     dir = "{0}/../static/results/{1}".format(os.path.abspath(os.path.dirname(__file__)), id)
     error = None
     if not os.path.exists(dir):
         error = "Request with id {0} doesn't exist!"
-    return render(request, 'report.html', {'error' : error, 'id' : id})
+    return render(request, 'report.html', {'error' : error, 'id' : id, 'url_prefix' : settings.URL_PREFIX})
 
 def check(request, id):
     response = {}
@@ -88,7 +89,7 @@ def check(request, id):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 def about(request):
-    return render(request, 'about.html')
+    return render(request, 'about.html', {'url_prefix' : settings.URL_PREFIX})
 
 def contact(request):
     if request.method == 'POST':
