@@ -4,3 +4,7 @@
 application/target/
 deployment-scripts/software/showcase/target/
 distributed-jmeter/static/results/*
+deployment-scripts/software/showcase/src/main/resources/database/database.aws.hibernate.properties
+deployment-scripts/software/showcase/src/main/resources/database/database.aws.mongodb.properties
+deployment-scripts/platform/generator/src/main/resources/database/database.aws.hibernate.properties
+deployment-scripts/platform/generator/src/main/resources/database/database.aws.mongodb.properties
