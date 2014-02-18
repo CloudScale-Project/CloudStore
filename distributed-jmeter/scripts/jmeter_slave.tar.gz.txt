@@ -1,0 +1,1 @@
+Get it on http://cloudscale.xlab.si/github/jmeter_slave.tar.gz
