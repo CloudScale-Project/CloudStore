@@ -26,7 +26,7 @@ Before you run scripts please examine the `config.ini` file (see Configuration s
 You can also use `install.sh` script which encapsulates running the scripts in one file. Run it with command:
 
 ```
-$ install.sh aws
+$ install.sh aws /path/to/config.ini
 ```
 
 if you want to deploy showcase on Amazon Web Services, or:
@@ -64,7 +64,7 @@ Configuration properties for RDS:
 
 * `generate_type` - If value is `dump` then the SQL dump will be imported to RDS (**Recommended**). If value is `script` then the Java generator will be used. (**Slow, not recommended**)
 
-If you use `script` type for generating, please also examine files in `platform/src/main/resources/database`!
+    If you use `script` type for generating, please also examine files in `platform/src/main/resources/database`!
 
 * `generate_dump_path` - Full path to dump file. You can download dump file from [here](http://cloudscale.xlab.si/rds-tpcw-dump-latest.sql)
 * `region` - Region in which RDS instances will be created.
