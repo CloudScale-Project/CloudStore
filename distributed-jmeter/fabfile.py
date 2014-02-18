@@ -1,13 +1,8 @@
-'''
-Created on 24. jul. 2012
-
-@author: urost
-'''
 from __future__ import with_statement
 from fabric.api import sudo, cd, run, settings, require, env, put, local, prefix, task
 from fabric.contrib.files import exists
 
-env.hosts = ['10.10.40.23'] #['pzs:30022']
+env.hosts = ['host'] 
 env.user = 'distributedjmeter'
 env.django_app = 'webapp'
 # tasks
