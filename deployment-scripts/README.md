@@ -25,11 +25,15 @@ Before you run scripts please examine the `config.ini` file (see Configuration s
 
 You can also use `install.sh` script which encapsulates running the scripts in one file. Run it with command:
 
-`$ install.sh aws`
+```
+$ install.sh aws
+```
 
 if you want to deploy showcase on Amazon Web Services, or:
 
-`$ install.sh openstack`
+```
+$ install.sh openstack
+```
 
 if you want to deploy showcase on OpenStack.
 
@@ -59,6 +63,9 @@ Configuration properties for AWS:
 Configuration properties for RDS:
 
 * `generate_type` - If value is `dump` then the SQL dump will be imported to RDS (**Recommended**). If value is `script` then the Java generator will be used. (**Slow, not recommended**)
+
+If you use `script` type for generating, please also examine files in `platform/src/main/resources/database`!
+
 * `generate_dump_path` - Full path to dump file. You can download dump file from [here](http://cloudscale.xlab.si/rds-tpcw-dump-latest.sql)
 * `region` - Region in which RDS instances will be created.
 * `instance_type` - Instance type to use for RDS instances. We recommend enough large instance type according to your testing scenario. Each instance has limited value for concurrent users to one RDS instance (max_connections MySQL config property). Please [click here](http://dba.stackexchange.com/a/41842) for more information! 
