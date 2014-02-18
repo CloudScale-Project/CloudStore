@@ -66,7 +66,7 @@ Configuration properties for RDS:
 
     If you use `script` type for generating, please also examine files in `platform/src/main/resources/database`!
 
-* `generate_dump_path` - Full path to dump file. You can download dump file from [here](http://cloudscale.xlab.si/rds-tpcw-dump-latest.sql)
+* `generate_dump_path` - Full path to dump file. You can download dump file from [here](http://cloudscale.xlab.si/github/rds-tpcw-dump-latest.sql)
 * `region` - Region in which RDS instances will be created.
 * `instance_type` - Instance type to use for RDS instances. We recommend enough large instance type according to your testing scenario. Each instance has limited value for concurrent users to one RDS instance (max_connections MySQL config property). Please [click here](http://dba.stackexchange.com/a/41842) for more information! 
 * `master_identifier` - Identifier for master instance.
