@@ -1,6 +1,7 @@
 import boto, boto.ec2
 import sys, os, time
 import paramiko
+import subprocess
 import logging
 from cloudscale import models
 
@@ -8,9 +9,8 @@ logger = logging.getLogger(__name__)
 
 class CreateInstance:
 
-    def __init__(self, config_path, cfg, key_pair, key_name, scenario_path, num_virtual_users, num_slaves):
+    def __init__(self, config_path, cfg, key_pair, key_name, scenario_path, num_slaves):
         self.scenario_path = scenario_path
-        self.num_virtual_users = num_virtual_users
         self.num_slaves = num_slaves
         self.key_pair = key_pair
         self.key_name = key_name
@@ -35,7 +35,7 @@ class CreateInstance:
         time.sleep(60) # wait for status checks
         self.log("Setting up master ...")
         self.setup_master(slaves, instance)
-        self.write_config(config_path, instance)
+        #self.write_config(config_path, instance)
 
     def log(self, msg, fin=0):
         logger.info(msg)
@@ -54,16 +54,19 @@ class CreateInstance:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+        #ip_addr = '54.194.221.83'
+        ip_addr = instance.ip_address
+
         if self.key_pair:
-            ssh.connect(instance.ip_address, username="ubuntu", key_filename=os.path.abspath(self.key_pair))
+            ssh.connect(ip_addr, username="ubuntu", key_filename=os.path.abspath(self.key_pair))
         else:
-            ssh.connect(instance.ip_address, username="ubuntu", password="root")
+            ssh.connect(ip_addr, username="ubuntu", password="root")
 
         scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
         dirname = os.path.abspath(os.path.dirname(__file__))
 
         self.log("Transfering jmeter_master.tar.gz ...")
-        scp.put( dirname + '/../../scripts/jmeter_master.tar.gz', 'jmeter.tar.gz')
+        scp.put( dirname + '/../scripts/jmeter_master.tar.gz', 'jmeter.tar.gz')
 
         self.log("Transfering JMeter scenario ...")
         scp.put( self.scenario_path, 'scenario.jmx')
@@ -74,29 +77,29 @@ class CreateInstance:
 
         ip_addresses = [instance.private_ip_address for instance in slaves]
         # ip_addresses = ['172.31.31.9', '172.31.26.205']
-        self.log( ip_addresses )
         cmd = "~/jmeter/bin/jmeter -n -t ~/scenario.jmx -R %s -l scenario.jtl -j scenario.log" % ",".join(ip_addresses)
-        self.log("Executing {0}".format(cmd))
+        self.log("Executing your JMeter scenario. This can take a while. Please wait ...")
         stdin, stdout, stderr = ssh.exec_command(cmd)
         # wait for JMeter to execute
         stdout.readlines()
 
         # get reports
-        userpath = "{0}/../static/results/{1}".format(dirname, os.path.basename(self.scenario_path)[:-4])
-        try:
-            os.makedirs(userpath)
-        except OSError as e:
-            if e.errno != 17:
-                raise
-            pass
+        resultspath = "{0}/../static/results/".format(dirname)
 
-        scp.get("/home/ubuntu/scenario.log", "{0}/{1}".format(userpath, "scenario.log"))
-        scp.get("/home/ubuntu/scenario.jtl", "{0}/{1}".format(userpath, "scenario.jtl"))
+        tmp_userpath = "/tmp/{0}".format(os.path.basename(self.scenario_path)[:-4])
+        os.makedirs(tmp_userpath, 0777)
+        scp.get("/home/ubuntu/scenario.log", "{0}/{1}".format(tmp_userpath, "scenario.log"))
+        scp.get("/home/ubuntu/scenario.jtl", "{0}/{1}".format(tmp_userpath, "scenario.jtl"))
+
+        cmd = "cp -r {0} {1}".format(tmp_userpath, resultspath)
+        p = subprocess.check_output(cmd.split())
 
         scp.close()
         ssh.close()
 
         self.log("Finished! You can now download report files.", 1)
+        instance_ids = [inst.id for inst in slaves] + [instance.id]
+        self.conn.terminate_instances(instance_ids=instance_ids)
 
     def setup_slaves(self, instances):
         for instance in instances:
@@ -111,7 +114,7 @@ class CreateInstance:
             scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
             dirname = os.path.abspath(os.path.dirname(__file__))
             self.log("Transfering jmeter_slave.tar.gz ...")
-            scp.put( dirname + '/../../scripts/jmeter_slave.tar.gz', 'jmeter.tar.gz')
+            scp.put( dirname + '/../scripts/jmeter_slave.tar.gz', 'jmeter.tar.gz')
 
             self.log( "Installing Java 7 on slave ..." )
             _, stdout, _ = ssh.exec_command("sudo apt-get -y install openjdk-7-jdk; tar xvf jmeter.tar.gz")
