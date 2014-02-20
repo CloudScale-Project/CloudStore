@@ -1,0 +1,14 @@
+Django==1.6.2
+MySQL-python==1.2.5
+amqp==1.4.3
+anyjson==0.3.3
+billiard==3.3.0.16
+boto==2.25.0
+celery==3.1.9
+ecdsa==0.10
+gunicorn==18.0
+kombu==3.0.12
+paramiko==1.12.1
+pycrypto==2.6.1
+pytz==2013.9
+wsgiref==0.1.2
