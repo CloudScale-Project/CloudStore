@@ -4,11 +4,12 @@ This is the first version of application that runs on [http://cloudscale.xlab.si
 It's a Django 1.6 app so you will need a support for Python 2.7 on your web server. We already provide you with configurations for Gunicorn, Supervisor and Nginx. This is default stack for deploying Django applications.
 
 ##Server setup
-Install Nginx and Supervisor with:
+Install Nginx, Supervisor, python-dev and MySQL with:
 
 ```
-$ sudo apt-get install nginx supervisor
+$ sudo apt-get install nginx supervisor libmysqlclient-dev python-dev mysql-server mysql-client
 ```
+This application also uses RabbitMQ. To see how to install it see [this site](https://www.rabbitmq.com/).
 
 You will also need to install Virtualenv. You can do this with:
 
