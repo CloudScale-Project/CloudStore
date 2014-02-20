@@ -9,3 +9,5 @@ deployment-scripts/software/showcase/src/main/resources/database/database.aws.mo
 deployment-scripts/platform/generator/src/main/resources/database/database.aws.hibernate.properties
 deployment-scripts/platform/generator/src/main/resources/database/database.aws.mongodb.properties
 distributed-jmeter/config.ini
+distributed-jmeter/conf/config.ini
+distributed-jmeter/conf/config.ini.production
