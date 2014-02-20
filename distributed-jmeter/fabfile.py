@@ -33,7 +33,7 @@ def deploy(install=False, migrate_db=False, branch=None):
         sudo('chmod 777 %(path)s/releases/current/scraper_app.log' % env)
 
         with cd('%(path)s/releases/current/%(project_name)s/conf/' % env):
-            run('cp confi.ini.production config.ini')
+            run('cp config.ini.production config.ini')
 
         if install:
             install_site()
