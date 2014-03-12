@@ -62,8 +62,8 @@ class DeploySoftware:
         scp.put(self.mysql_version, 'showcase-1-a.war')
         #scp.put(self.nosql_version, 'showcase-1-b.jar')
 
-        ssh.exec_command("sudo unzip showcase-1-a.war -d showcase-1-a")
-        ssh.exec_command("sudo cp -r showcase-1-a " + self.remote_deploy_path)
+        #ssh.exec_command("sudo unzip showcase-1-a.war -d showcase-1-a")
+        ssh.exec_command("sudo cp -r showcase-1-a.war " + self.remote_deploy_path)
         ssh.exec_command("sudo /etc/init.d/tomcat7 restart")
 
         print "Successfully finished installation"

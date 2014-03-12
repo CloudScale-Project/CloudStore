@@ -4,6 +4,8 @@ import paramiko
 import ConfigParser
 import sys, os
 from common.Cloudscale import *
+import re
+import subprocess
 
 class InstallTomcatApache:
 
@@ -16,7 +18,20 @@ class InstallTomcatApache:
         self.setup_instance()
         self.write_config()
 
+    def create_virtual_host(self):
+        fr = open(os.path.join(os.path.dirname(__file__), 'cloudscale-apache-virtualhost.conf'), 'r')
+        fw = open(os.path.join(os.path.dirname(__file__), 'cloudscale-apache-virtualhost.conf.new'), 'w+')
+
+        pat = re.compile('%servername%')
+        for line in fr:
+            res = pat.search(line)
+            if res is not None:
+                fw.write(line.replace('%servername%', self.cfg.get('infrastructure', 'loadbalancer_url')))
+            else:
+                fw.write(line)
+
     def setup_instance(self):
+        self.create_virtual_host()
         for ip_address in self.ip_addresses:
             if sys.platform == 'win32':
                 self.windows_shell(ip_address)
@@ -34,7 +49,6 @@ class InstallTomcatApache:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-
         if key_pair:
             ssh.connect(ip_address, username=self.remote_user, key_filename=os.path.abspath(self.key_pair))
         else:
@@ -44,7 +58,7 @@ class InstallTomcatApache:
 
         scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
         scp.put(os.path.abspath('%s%scloudscale-vm-setup.sh' % (working_dir, os.path.sep)), 'cloudscale-vm-setup.sh')
-        scp.put(os.path.abspath('%s%scloudscale-apache-virtualhost.conf' % (working_dir, os.path.sep)), 'cloudscale.conf')
+        scp.put(os.path.abspath('%s%scloudscale-apache-virtualhost.conf.new' % (working_dir, os.path.sep)), 'cloudscale.conf')
 
         _, stdout, _ = ssh.exec_command("sudo sh cloudscale-vm-setup.sh")
         stdout.readlines()
