@@ -3,13 +3,14 @@ import sys, os, time
 import paramiko
 import subprocess
 import logging
-from cloudscale import models
+from cloudscale.common.distributed_jmeter import DistributedJmeter
 
 logger = logging.getLogger(__name__)
 
-class CreateInstance:
+class CreateInstance(DistributedJmeter):
 
     def __init__(self, config_path, cfg, key_pair, key_name, scenario_path, num_slaves):
+        super(CreateInstance, self).__init__(scenario_path)
         self.scenario_path = scenario_path
         self.num_slaves = num_slaves
         self.key_pair = key_pair
@@ -37,18 +38,7 @@ class CreateInstance:
         self.setup_master(slaves, instance)
         #self.write_config(config_path, instance)
 
-    def log(self, msg, fin=0):
-        logger.info(msg)
-        db_log = models.Log()
-        db_log.process_id = self.pid
-        db_log.log = msg
-        db_log.finished = fin
-        db_log.save()
 
-    def clear(self):
-        msgs = models.Log.objects.filter(process_id=self.pid)
-        for obj in msgs:
-            obj.delete()
 
     def setup_master(self, slaves, instance):
         ssh = paramiko.SSHClient()
