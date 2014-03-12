@@ -6,7 +6,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'load_test',
         'USER': 'user',
-        'PASSWORD': 'password',
+        'PASSWORD': 'pass',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -22,8 +22,8 @@ INSTALLED_APPS = (
     'cloudscale',
     'gunicorn',
 )
-FORCE_SCRIPT_NAME='/distributed-jmeter/'
-URL_PREFIX = '/distributed-jmeter'
+FORCE_SCRIPT_NAME=''
+URL_PREFIX = ''
 MEDIA_ROOT = '{0}/../media/'.format(BASE_DIR)
 STATIC_ROOT = '{0}/../static/'.format(BASE_DIR)
 STATIC_URL = '{0}/static/'.format(URL_PREFIX)

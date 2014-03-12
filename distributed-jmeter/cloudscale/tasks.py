@@ -1,22 +1,21 @@
 from __future__ import absolute_import
 from celery import shared_task, task
-import time, threading
 import os, subprocess
 import logging
-import time
-import sys
 from cloudscale.aws_distributed_jmeter import CreateInstance
 from cloudscale.aws_distributed_jmeter import read_config
-from cloudscale.models import Log
+from cloudscale.openstack_distributed_jmeter import OpenStackDistributedJmeter
 logger = logging.getLogger(__name__)
 
 @shared_task
 def run_tests(scenario_path):
-    # sys.path.append("{0}/../../scripts/aws/".format(os.path.abspath(os.path.dirname(__file__))))
-    # print sys.path
-    # import run_test
-    #redis_instance = redis.Redis()
-    # logger.info("Calling program ...")
+#    run_aws_test(scenario_path)
+    run_openstack_test(scenario_path)
+
+def run_openstack_test(scenario_path):
+    OpenStackDistributedJmeter('10.32.11.102', ['10.32.11.103:8557', '10.32.11.104:8557'], scenario_path)
+
+def run_aws_test(scenario_path):
     basedir = os.path.abspath(os.path.dirname(__file__))
     config_path = '%s/../conf/config.ini' % basedir
     cfg = read_config(config_path)

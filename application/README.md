@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ##Introduction
 Here you will find a modernized version of TPC-W e-commerce benchmark applicatin. Basically the application is a very simple bookshop. The modernized version is written in SpringFramework and uses Maven for building.
 
@@ -15,3 +16,6 @@ or
 ```bash
 $ mvn -Pamazon-mongodb install
 ```
+=======
+Showcase
+>>>>>>> 60bb954... Initial commit
