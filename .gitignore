@@ -11,3 +11,4 @@ deployment-scripts/platform/generator/src/main/resources/database/database.aws.m
 distributed-jmeter/config.ini
 distributed-jmeter/conf/config.ini
 distributed-jmeter/conf/config.ini.production
+deployment-scripts/platform/rds-tpcw-dump-15.1.2014.sql

@@ -31,10 +31,10 @@ class ConfigureRDS:
         for i in xrange(int(num)):
             print "Creating read replica " + str(i+1)
             try:
-                instance = self.conn.create_dbinstance_read_replica('cloudscale-replica' + str(i+1), 'cloudscale-master', 'db.t1.micro', availability_zone="eu-west-1a")
+                instance = self.conn.create_dbinstance_read_replica('cloudscale-replica' + str(i+1), 'cloudscale-master', self.cfg.get('RDS', 'instance_type'), availability_zone="eu-west-1a")
             except boto.exception.BotoServerError as e:
                 if not e.error_code == 'DBInstanceAlreadyExists':
-                    raise
+                    raise e
             finally:
                 instance = self.conn.get_all_dbinstances(instance_id='cloudscale-replica' + str(i+1))[0]
 
@@ -63,7 +63,8 @@ class ConfigureRDS:
         db = self.cfg.get('RDS', 'database_name')
         user = self.cfg.get('RDS', 'database_user')
         passwd = self.cfg.get('RDS', 'database_pass')
-        cmd = [os.path.abspath("dump.sh"), str(instance.endpoint[0]), user, passwd, db, dump_file]
+        dump_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'dump.sh'))
+        cmd = [dump_path, str(instance.endpoint[0]), user, passwd, db, dump_file]
         subprocess.call(cmd)
 
     def write_showcase_database_config(self, instance):
@@ -108,7 +109,7 @@ class ConfigureRDS:
         print "Creating RDS master instance ..."
 
         try:
-            instance = self.conn.create_dbinstance('cloudscale-master', 5, 'db.t1.micro', 'root', self.db_password, db_name='tpcw', vpc_security_groups=[sg_id], availability_zone='eu-west-1a', backup_retention_period=0)
+            instance = self.conn.create_dbinstance('cloudscale-master', 5, self.cfg.get('RDS', 'instance_type'), 'root', self.db_password, db_name='tpcw', vpc_security_groups=[sg_id], availability_zone='eu-west-1a', backup_retention_period=1)
         except boto.exception.BotoServerError as e:
             if not e.error_code == 'DBInstanceAlreadyExists':
                 raise

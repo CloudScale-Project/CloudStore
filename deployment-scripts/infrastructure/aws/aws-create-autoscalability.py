@@ -15,7 +15,7 @@ class Autoscalability:
         self.conn = boto.ec2.autoscale.connect_to_region(self.cfg.get('EC2', 'region'),
                                                aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
                                                aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-        lb_name = self.create_load_balancer()
+        lb_name = self.cfg.get('infrastructure', 'loadbalancer_name')
         self.create_security_group('http', 'Security group for HTTP', '0.0.0.0/0', '80')
         self.create_security_group('ssh', 'Security group for SSH', '0.0.0.0/0', '22')
 
@@ -123,22 +123,11 @@ class Autoscalability:
             if str(e.error_code) != 'InvalidGroup.Duplicate':
                 raise
 
-    def create_load_balancer(self):
-        print "Creating load balancer ..."
-        conn = boto.ec2.elb.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
 
-        zones = self.cfg.get('EC2', 'availability_zones').split(",")
-        ports = [(80, 80, 'http')]
-
-        lb = conn.create_load_balancer('cloudscale-lb', zones, ports)
-
-        return lb.name
 
 
 if __name__ == "__main__":
     check_args(1, "<config_path>")
     _, cfg, key_name, key_pair = parse_args()
-
+    print "Autoscalability"
     Autoscalability(cfg, key_name, key_pair)

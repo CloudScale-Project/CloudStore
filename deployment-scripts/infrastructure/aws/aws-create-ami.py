@@ -13,6 +13,7 @@ class EC2CreateAMI:
                                                aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
 
         ami_id = self.create_ami(self.cfg.get('infrastructure', 'ip_address'))
+        print ami_id
         self.cfg.save_option(config_file,'infrastructure', 'ami_id', ami_id)
         print "Done"
 
