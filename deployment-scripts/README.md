@@ -4,14 +4,23 @@ In this folder you will find deployment scripts for showcase for Cloudscale proj
 Scripts are organized in three layers according to cloud environment (infrastructure, platform, software). The ```install.sh``` script encapsulate everything together, but you can execute every script seperatelly.
 
 ##Requirements
+
+**MySQL**
+
+You only need `mysql` command if you use *dump* value for `generate_type` in config.ini (see below) to import data into RDS databases.
+
+On Debian based linux distributions you can do this by:
+
+`$ sudo apt-get install mysql-client`
+
+Please also look in to `platform/aws/dump.sh` file and set the path to the `mysql` command.
+
+**Other**
+
 You can install these requirements with `pip` or `easy_install`:
 
 * paramiko
 * boto
-
-You also need to set `PYTHONPATH` environment to this directory, e.g.:
-
-`$ export PYTHONPATH=/home/cloudscale/Downloads/Showcase-master/deployment-scripts`
 
 ##Usage
 We provided scripts for deploying showcase on Amazon Web Services (AWS) and OpenStack. On AWS the showcase is deployed into autiscalability group. On OpenStack is deployed in cluster of 4 machines. 
