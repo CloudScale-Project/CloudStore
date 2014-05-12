@@ -9,10 +9,9 @@ You can install these requirements with `pip` or `easy_install`:
 * paramiko
 * boto
 
+You also need to set `PYTHONPATH` environment to this directory, e.g.:
 
-
-
-
+`$ export PYTHONPATH=/home/cloudscale/Downloads/Showcase-master/deployment-scripts`
 
 ##Usage
 We provided scripts for deploying showcase on Amazon Web Services (AWS) and OpenStack. On AWS the showcase is deployed into autiscalability group. On OpenStack is deployed in cluster of 4 machines. 
