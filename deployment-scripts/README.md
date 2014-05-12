@@ -15,6 +15,14 @@ On Debian based linux distributions you can do this by:
 
 Please also look in to `platform/aws/dump.sh` file and set the path to the `mysql` command.
 
+**Maven**
+
+Showcases are built with Maven, so you need `mvn` tool to build showcases.
+
+On Debian based linux distributions you can install it by:
+
+`$ sudo apt-get install maven`
+
 **Other**
 
 You can install these requirements with `pip` or `easy_install`:
