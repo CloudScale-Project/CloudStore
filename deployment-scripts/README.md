@@ -15,6 +15,14 @@ On Debian based linux distributions you can do this by:
 
 Please also look in to `platform/aws/dump.sh` file and set the path to the `mysql` command.
 
+**Java**
+
+You will need the Java Development Kit (JDK) to build showcase. 
+
+On Debian based linux distributions you can do this by:
+
+`$ sudo apt-get install openjdk-7-jdk`
+
 **Maven**
 
 Showcases are built with Maven, so you need `mvn` tool to build showcases.
