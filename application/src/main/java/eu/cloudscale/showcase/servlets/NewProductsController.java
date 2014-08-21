@@ -64,7 +64,7 @@ public class NewProductsController extends AController
 		model.addAttribute( "products", service.getNewProducts( category ) );
 		model.addAttribute( "promotional", getPromotional() );
 		
-		setupFrontend(model, shoppingId, customerId);
+		setupUrl(model, shoppingId, customerId);
 		return "new-products";
 	}
 

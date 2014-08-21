@@ -50,22 +50,29 @@ public class HomeController extends AController
 	        @RequestParam( value = "C_ID", required = false ) Integer customerId,
 	        Locale locale, HttpServletRequest request, Model model)
 	{
-		HttpSession session = request.getSession( false );
-
-		if ( session == null )
-			session = request.getSession( true );
-
-		String categoryUrl = getUrl1( shoppingId, customerId, "" );
-
-		model.addAttribute( "promotional", getPromotional() );
-		model.addAttribute( "categories", prepareCategories( categoryUrl ) );
-
-		model.addAttribute( "categoryUrl", categoryUrl );
-
-		setupFrontend( model, shoppingId, customerId );
-
-		String productUrl = getProductUrl( shoppingId, customerId );
-		model.addAttribute( "productUrl", productUrl );
+		try 
+		{
+    		HttpSession session = request.getSession( false );
+    
+    		if ( session == null )
+    			session = request.getSession( true );
+    
+    		String categoryUrl = getUrl1( shoppingId, customerId, "" );
+    
+    		model.addAttribute( "promotional", getPromotional() );
+    		model.addAttribute( "categories", prepareCategories( categoryUrl ) );
+    
+    		model.addAttribute( "categoryUrl", categoryUrl );
+    
+    		setupUrl( model, shoppingId, customerId );
+    
+    		String productUrl = getProductUrl( shoppingId, customerId );
+    		model.addAttribute( "productUrl", productUrl );
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		return "home";
 	}

@@ -3,6 +3,8 @@ package eu.cloudscale.showcase.db.dao.hibernate.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import org.hibernate.CacheMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -21,7 +23,7 @@ import eu.cloudscale.showcase.db.model.IItem;
 import eu.cloudscale.showcase.db.model.hibernate.Item;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class ItemDaoImpl extends DaoImpl<IItem> implements IItemDao
 {
 
@@ -35,6 +37,14 @@ public class ItemDaoImpl extends DaoImpl<IItem> implements IItemDao
 	public ItemDaoImpl(SessionFactory sessionFactory)
 	{
 		super( sessionFactory );
+		try
+        {
+	        System.out.println(sessionFactory.getReference());
+        }
+        catch ( NamingException e )
+        {
+	        e.printStackTrace();
+        }
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -124,36 +134,33 @@ public class ItemDaoImpl extends DaoImpl<IItem> implements IItemDao
 	@Transactional( readOnly = true )
 	public List<Object[]> getBestSellers(String category)
 	{
-		Session session = sessionFactory.openSession();
+		Session session = sessionFactory.getCurrentSession();
 
-		 Query query =
-		 session.createQuery("SELECT I.IId, A.AFname, A.ALname, I.ITitle, SUM(OL.olQty) AS val " +
-		 		"FROM OrderLine as OL, Item as I, Author as A " +
-		 		"WHERE " +
-		 		"I.author.AId = A.AId AND " +
-		 		"I.IId = OL.item.IId AND " +
-		 		"I.ISubject = :category " +
-		 		"GROUP BY OL.item.IId " +
-		 		"ORDER BY val DESC");
+		// Query query =
+		// session.createQuery("SELECT I, A, SUM(OL.olQty) AS val "
+		// + " FROM OrderLine as OL, Item as I, Author as A"
+		// +
+		// " WHERE OL.item.IId = I.IId AND I.ISubject = :category AND I.author.AId = A.AId"
+		// + " GROUP BY I.IId ORDER BY val DESC");
 
-//		Query query = session
-//		        .createSQLQuery(
-//		                "SELECT i_id as a, i_title as b, a_fname as c, a_lname as d, SUM(ol_qty) AS val "
-//		                        + "FROM "
-//		                        + "orders, order_line, item, author "
-//		                        + "WHERE "
-//		                        + "order_line.ol_o_id = orders.o_id AND item.i_id = order_line.ol_i_id "
-//		                        + "AND item.i_subject = :category AND item.i_a_id = author.a_id GROUP BY i_id "
-//		                        + "ORDER BY orders.o_date, val DESC" )
-//		        .addScalar( "a" ).addScalar( "b" ).addScalar( "c" )
-//		        .addScalar( "d" ).addScalar( "val" );
+		Query query = session
+		        .createSQLQuery(
+		                "SELECT i_id as a, i_title as b, a_fname as c, a_lname as d, SUM(ol_qty) AS val "
+		                        + "FROM "
+		                        + "orders, order_line, item, author "
+		                        + "WHERE "
+		                        + "order_line.ol_o_id = orders.o_id AND item.i_id = order_line.ol_i_id "
+		                        + "AND item.i_subject = :category AND item.i_a_id = author.a_id GROUP BY i_id "
+		                        + "ORDER BY orders.o_date, val DESC" )
+		        .addScalar( "a" ).addScalar( "b" ).addScalar( "c" )
+		        .addScalar( "d" ).addScalar( "val" );
 
 		query.setParameter( "category", category );
 		query.setMaxResults( 50 );
 
 		long start = System.nanoTime();
 		List<Object[]> res = query.list();
-		System.out.println( "[best-sellers] Category = " + category + ", cas izvajanja = "
+		System.out.println( "Drek na palci se je izvajal: "
 		        + ( System.nanoTime() - start ) / 1E9 );
 
 		return res;

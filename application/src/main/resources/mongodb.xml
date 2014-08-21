@@ -12,18 +12,18 @@
 
 	<!-- More information: http://static.springsource.org/spring-data/data-mongodb/docs/current/reference/html/mongo.core.html -->
 	<context:property-placeholder
-		location="classpath:database/database.aws.mongodb.properties" />
+		location="classpath:database/database.mongodb.properties" />
 	
 	<context:component-scan base-package="eu.cloudscale.showcase.db.dao.mongo.impl" />
 	
 	<mongo:mongo host="${mongodb.host}" port="${mongodb.port}" >
-		<mongo:options connections-per-host="100"
-                   threads-allowed-to-block-for-connection-multiplier="50"
-                   connect-timeout="1000"
-                   max-wait-time="2000"
-                   auto-connect-retry="true"
-                   socket-keep-alive="true"
-                   socket-timeout="2000"/>
+		<mongo:options connections-per-host="${connection_pool_size}"
+	                   threads-allowed-to-block-for-connection-multiplier="50"
+	                   connect-timeout="1000"
+	                   max-wait-time="2000"
+	                   auto-connect-retry="true"
+	                   socket-keep-alive="true"
+	                   socket-timeout="2000"/>
 	</mongo:mongo>
 
 	<mongo:db-factory host="${mongodb.host}" port="${mongodb.port}"
@@ -31,8 +31,8 @@
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
-		
 	</bean>
 	<bean id="service" class="eu.cloudscale.showcase.db.services.MongoService">
 	</bean>
+	<bean id="generate" class="eu.cloudscale.showcase.generate.GenerateMongo"/>	
 </beans>

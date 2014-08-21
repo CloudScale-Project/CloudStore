@@ -5,6 +5,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import eu.cloudscale.showcase.db.IService;
+import eu.cloudscale.showcase.db.common.ContextHelper;
 import eu.cloudscale.showcase.db.dao.IAddressDao;
 import eu.cloudscale.showcase.db.dao.IAuthorDao;
 import eu.cloudscale.showcase.db.dao.ICcXactsDao;
@@ -20,15 +29,15 @@ import eu.cloudscale.showcase.db.model.hibernate.CcXacts;
 import eu.cloudscale.showcase.db.model.hibernate.OrderLine;
 import eu.cloudscale.showcase.db.model.hibernate.Orders;
 
-
+@Component
+@Transactional
 public class GenerateHibernate extends AGenerate
 {
 	
 	public GenerateHibernate()
 	{
-		super();
 	}
-
+	
 	@Override
     public void populateOrdersAndCC_XACTSTable()
     {
@@ -57,7 +66,7 @@ public class GenerateHibernate extends AGenerate
 		int CX_NUM;
 		String CX_NAME;
 		java.sql.Date CX_EXPIRY;
-		int CX_AUTH_ID;
+		String CX_AUTH_ID;
 		int CX_CO_ID;
 
 		System.out.println( "Populating ORDERS, ORDER_LINES, CC_XACTS with "
@@ -65,14 +74,14 @@ public class GenerateHibernate extends AGenerate
 
 		System.out.print( "Complete (in 10,000's): " );
 
-		ICustomerDao customerDao = super.db.getCustomerDaoImpl();
-		IAddressDao addressDao = super.db.getAddressDaoImpl();
-		IItemDao itemDao = super.db.getItemDaoImpl();
-		ICountryDao countryDao = super.db.getCountryDaoImpl();
-		IOrdersDao ordersDao = super.db.getOrdersDaoImpl();
-		IOrderLineDao orderLineDao = super.db.getOrderLineDaoImpl();
-		ICcXactsDao ccXactsDao = super.db.getCcXactsDaoImpl();
-		IAuthorDao authorDao = super.db.getAuthorDaoImpl();
+		ICustomerDao customerDao = super.service.getCustomerDaoImpl();
+		IAddressDao addressDao = super.service.getAddressDaoImpl();
+		IItemDao itemDao = super.service.getItemDaoImpl();
+		ICountryDao countryDao = super.service.getCountryDaoImpl();
+		IOrdersDao ordersDao = super.service.getOrdersDaoImpl();
+		IOrderLineDao orderLineDao = super.service.getOrderLineDaoImpl();
+		ICcXactsDao ccXactsDao = super.service.getCcXactsDaoImpl();
+		IAuthorDao authorDao = super.service.getAuthorDaoImpl();
 
 		for ( int i = 1; i <= NUM_ORDERS; i++ )
 		{
@@ -139,7 +148,7 @@ public class GenerateHibernate extends AGenerate
 			cal = new GregorianCalendar();
 			cal.add( Calendar.DAY_OF_YEAR, getRandomInt( 10, 730 ) );
 			CX_EXPIRY = new java.sql.Date( cal.getTime().getTime() );
-			CX_AUTH_ID = getRandomInt( 1, NUM_AUTHORS );
+			CX_AUTH_ID = getRandomAString( 15 );
 			CX_CO_ID = getRandomInt( 1, 92 );
 
 			CcXacts ccXacts = new CcXacts();
@@ -150,7 +159,7 @@ public class GenerateHibernate extends AGenerate
 			ccXacts.setCxNum( CX_NUM );
 			ccXacts.setCxName( CX_NAME );
 			ccXacts.setCxExpiry( CX_EXPIRY );
-			ccXacts.setCxAuthId( authorDao.findById( CX_AUTH_ID ));
+			ccXacts.setCxAuthId( String.valueOf(CX_AUTH_ID) );
 			ccXacts.setCxXactAmt( O_TOTAL );
 			ccXacts.setCxXactDate( O_SHIP_DATE );
 
@@ -166,4 +175,35 @@ public class GenerateHibernate extends AGenerate
 
 		System.out.println( "" );
     }
+
+	@Override
+	public void dropTables(String[] tables) 
+	{
+		SessionFactory sf = (SessionFactory) ctx.getBean("sessionFactory");
+		
+		Session session = sf.openSession();
+		Query q = session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0");
+		q.executeUpdate();
+		
+		for(String table : tables)
+		{
+			// Ugly hack so that TRUNCATE TABLE works
+			q = session.createSQLQuery("CREATE TABLE  IF NOT EXISTS " + table + " (id int)");
+			q.executeUpdate();
+			
+			q = session.createSQLQuery("TRUNCATE TABLE " + table);
+			q.executeUpdate();
+			
+//			q = session.createSQLQuery("DROP TABLE IF EXISTS " + table);
+//			q.executeUpdate();
+//			System.out.println("DROPPED TABLE " + table);
+		}
+		
+		q = session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1");
+		q.executeUpdate();
+		
+		session.close();
+//		sf.close();
+//		sf = null;
+	}
 }

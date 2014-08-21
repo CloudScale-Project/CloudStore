@@ -27,6 +27,7 @@ public class ShoppingCartDaoImpl extends DaoImpl<IShoppingCart> implements IShop
 	@Override
     public Integer createEmptyCart()
     {
+		
 		IShoppingCart sc = new ShoppingCart();
 		sc.setScId( getLastId() + 1 );
 		sc.setScTime( new Date() );

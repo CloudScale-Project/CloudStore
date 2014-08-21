@@ -39,7 +39,7 @@ public class Item implements java.io.Serializable, IItem
 
 	private static final long serialVersionUID  = 8806932749710043085L;
 
-	private Integer           IId;
+	private Integer            id;
 
 	private IAuthor           author;
 
@@ -98,12 +98,12 @@ public class Item implements java.io.Serializable, IItem
 	@Column( name = "I_ID", unique = true, nullable = false )
 	public Integer getIId()
 	{
-		return this.IId;
+		return this.id;
 	}
 
 	public void setIId(Integer IId)
 	{
-		this.IId = IId;
+		this.id = IId;
 	}
 
 	@ManyToOne( targetEntity=Author.class, fetch = FetchType.LAZY )

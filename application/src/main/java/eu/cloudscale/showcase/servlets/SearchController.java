@@ -20,40 +20,47 @@ public class SearchController extends AController
 	@RequestMapping( method=RequestMethod.GET )
 	public String get(HttpServletRequest request, Model model)
 	{
-	
-		HttpSession session = request.getSession(false);
-		
-		String field = request.getParameter("searchField");
-		String keyword = request.getParameter( "keyword" );
-		ArrayList<String> errors = new ArrayList<String>();
-		
-		if( keyword == null)
+		try 
 		{
-			keyword = "";
-			errors.add( "Search string is empty" );
-			model.addAttribute( "errors", errors );
+    		HttpSession session = request.getSession(false);
+    		
+    		String field = request.getParameter("searchField");
+    		String keyword = request.getParameter( "keyword" );
+    		ArrayList<String> errors = new ArrayList<String>();
+    		
+    		if( keyword == null)
+    		{
+    			keyword = "";
+    			errors.add( "Search string is empty" );
+    			model.addAttribute( "errors", errors );
+    		}
+    		
+    		if( errors.isEmpty() )
+    		{
+        		if( field.equalsIgnoreCase( "author" ))
+        		{
+        			model.addAttribute( "results", service.searchByAuthor(keyword) );
+        		}
+        		else if( field.equalsIgnoreCase( "title" ))
+        		{
+        			model.addAttribute( "results", service.searchByTitle(keyword) );
+        		}
+        		else if( field.equalsIgnoreCase( "subject" ))
+        		{
+        			model.addAttribute( "results", service.searchBySubject(keyword) );
+        		}
+    		}
+    		
+    		model.addAttribute( "searchField", field );
+    		model.addAttribute( "keyword", keyword );
+    		setupUrls( model, request);
+    		return "search";
 		}
-		
-		if( errors.isEmpty() )
+		catch(Exception e)
 		{
-    		if( field.equalsIgnoreCase( "author" ))
-    		{
-    			model.addAttribute( "results", service.searchByAuthor(keyword) );
-    		}
-    		else if( field.equalsIgnoreCase( "title" ))
-    		{
-    			model.addAttribute( "results", service.searchByTitle(keyword) );
-    		}
-    		else if( field.equalsIgnoreCase( "subject" ))
-    		{
-    			model.addAttribute( "results", service.searchBySubject(keyword) );
-    		}
+			e.printStackTrace();
+			return "search";
 		}
-		
-		model.addAttribute( "searchField", field );
-		model.addAttribute( "keyword", keyword );
-		setupUrls( model, request);
-		return "search";
 	}
 	
 	private void setupUrls(Model model, HttpServletRequest request)
@@ -69,7 +76,7 @@ public class SearchController extends AController
 		{
 			shoppingId = Integer.valueOf(request.getParameter( "C_ID" ));
 		}
-		setupFrontend( model, shoppingId, customerId);
+		setupUrl( model, shoppingId, customerId);
 		
 		String productUrl = getProductUrl(shoppingId, customerId);
 		model.addAttribute( "productUrl", productUrl);

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +32,11 @@ import eu.cloudscale.showcase.db.model.IOrders;
 import eu.cloudscale.showcase.db.model.IShoppingCart;
 import eu.cloudscale.showcase.db.model.IShoppingCartLine;
 
-@Transactional(readOnly=true)
 public abstract class AService implements IService
 {	
 	@SuppressWarnings( "rawtypes" )
 	@Override
+	@Transactional
 	@Cacheable("newProducts")
 	public List getNewProducts(String category)
 	{
@@ -42,7 +44,6 @@ public abstract class AService implements IService
 	}
 
 	@Override
-	@Transactional(readOnly=false)
 	public IShoppingCart doCart(Integer shoppingId, Integer itemId,
 	        List<Integer> ids, List<Integer> quantities)
 	{
@@ -62,8 +63,7 @@ public abstract class AService implements IService
 
 		return scDao.findById( shoppingId );
 	}
-	
-	@Transactional(readOnly=false)
+
 	protected void addRandomItemToCartIfNecessary(IShoppingCartLineDao sclDao,
 	        int SHOPPING_ID)
 	{
@@ -85,7 +85,7 @@ public abstract class AService implements IService
 			ex.printStackTrace();
 		}
 	}
-	
+
 	protected IShoppingCart getCart(Integer shoppingId, double discount)
 	{
 		IShoppingCartDao scDao = getShoppingCartDaoImpl();
@@ -93,7 +93,6 @@ public abstract class AService implements IService
 		return sc;
 	}
 
-	@Transactional(readOnly=false)
 	protected void resetCartTime(IShoppingCartLineDao sclDao, Integer shoppingId)
 	{
 		IShoppingCartDao scDao = getShoppingCartDaoImpl();
@@ -126,7 +125,6 @@ public abstract class AService implements IService
 	// return relatedItem;
 	// }
 
-	@Transactional(readOnly=false)
 	protected void refreshCart(Integer shoppingId, List<Integer> ids,
 	        List<Integer> quantities)
 	{
@@ -149,7 +147,7 @@ public abstract class AService implements IService
 
 	}
 
-	@Transactional(readOnly=false)
+	@Transactional
 	protected void addItem(Integer shoppingId, IItem item)
 	{
 		IShoppingCartLineDao sclDao = getShoppingCartLineDaoImpl();
@@ -179,7 +177,6 @@ public abstract class AService implements IService
 	}
 
 	@Override
-	@Transactional(readOnly=false)
 	public BuyConfirmResult doBuyConfirm(Integer shoppingId,
 	        Integer customerId, String ccType, long ccNumber, String ccName,
 	        Date ccExpiry, String shipping, String street1, String street2,
@@ -207,7 +204,6 @@ public abstract class AService implements IService
 	}
 
 	@Override
-	@Transactional(readOnly=false)
 	public BuyConfirmResult doBuyConfirm(Integer shoppingId,
 	        Integer customerId, String ccType, Long ccNumber, String ccName,
 	        Date ccExpiry, String shipping)
@@ -226,8 +222,7 @@ public abstract class AService implements IService
 
 		return new BuyConfirmResult( order, sc );
 	}
-	
-	@Transactional(readOnly=false)
+
 	protected void clearCart(Integer shoppingId)
 	{
 		IShoppingCartDao scDao = getShoppingCartDaoImpl();
@@ -246,7 +241,6 @@ public abstract class AService implements IService
 		}
 	}
 
-	@Transactional(readOnly=false)
 	protected ICcXacts saveCcXacts(IOrders order, String ccType, long ccNumber,
 	        String ccName, Date ccExpiry, IShoppingCart cart, IAddress address)
 	{
@@ -273,8 +267,7 @@ public abstract class AService implements IService
 
 		return ccXacts;
 	}
-	
-	@Transactional(readOnly=false)
+
 	protected IAddress saveAddress(String street1, String street2, String city,
 	        String state, String zip, String country)
 	{
@@ -294,8 +287,7 @@ public abstract class AService implements IService
 
 		return address;
 	}
-	
-	@Transactional(readOnly=false)
+
 	protected IOrders saveOrder(IAddress address, ICustomer customer,
 	        String shipping, IShoppingCart sc, double discount)
 	{

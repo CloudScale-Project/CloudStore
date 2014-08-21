@@ -1,12 +1,74 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorator="/templates/layout">
-  <head>
-  	<title>Shopping cart</title>
-  </head>
+		xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shopping cart</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <link rel="stylesheet" href="" th:href="@{/resources/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="" th:href="@{/resources/css/bootstrap-responsive.min.css}"/>
+    <style type="text/css">
+        body {
+          padding-top: 20px;
+          padding-bottom: 40px;
+        }
+        
+        /* Custom container */
+        .container-narrow {
+          margin: 0 auto;
+          max-width: 700px;
+        }
+        .container-narrow > hr {
+          margin: 30px 0;
+        }
+        
+        /* Main marketing message and sign up button */
+        .jumbotron {
+          margin: 60px 0;
+          text-align: center;
+        }
+        .jumbotron h1 {
+          font-size: 72px;
+          line-height: 1;
+        }
+        .jumbotron .btn {
+          font-size: 21px;
+          padding: 14px 24px;
+        }
+        
+        /* Supporting marketing content */
+        .marketing {
+          margin: 60px 0;
+        }
+        .marketing p + h4 {
+          margin-top: 28px;
+        }
+        .promotional{
+        	margin: auto;
+        	width: 550px;
+        }
+        .promotional .pull-left{
+        	padding-right: 10px;
+        }
+        .left-column table td, 
+        .right-column table td{
+        	width: 150px;
+        	text-align: center;
+        }
+    </style>
+</head>
 <body>
-<div layout:fragment="content">
+<div class="container-narrow">
+
+	<div class="masthead">
+		<ul class="nav nav-pills pull-right">
+		  <li><a th:href="@{${searchUrl}}">Search</a></li>
+		  <li><a th:href="@{${shoppingCartUrl}}">Shopping cart</a></li>
+		  <li><a th:href="@{${orderInquiryUrl}}">Order list</a></li>
+		</ul>
+		<h3 class="muted"><a href="/" th:href="@{${homeUrl}}"><img th:src="@{/resources/img/logo-CloudScale.png}" /></a></h3>
+	</div>
+	
+	<hr />
 	<div th:if="${errors.isEmpty()}">
 		<div class="jumbotron">
 			<h1>TPC Web Commerce Benchmark (TPC-W)</h1>
@@ -14,7 +76,7 @@
 		<div class="promotional">
 			<div class="pull-left" th:each="item : ${promotional}">
 				<a th:href="@{'/product-detail?I_ID=' + ${item.IId}}">
-					<img th:src="@{ ${imgResourceUrl} + '/' + ${item.IThumbnail}" src="" width="100" height="100" />
+					<img th:src="@{/resources/img/} + ${item.IThumbnail}" src="" width="100" height="100" />
 				</a>
 			</div>
 			<div class="clearfix"></div>

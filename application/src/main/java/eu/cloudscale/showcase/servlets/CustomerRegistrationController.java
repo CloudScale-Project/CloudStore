@@ -47,7 +47,7 @@ public class CustomerRegistrationController extends AController
 
 		model.addAttribute( "sessionId", session.getId() );
 
-		setupFrontend( model, shoppingId, customerId );
+		setupUrl( model, shoppingId, customerId );
 		return "customer-registration";
 	}
 }

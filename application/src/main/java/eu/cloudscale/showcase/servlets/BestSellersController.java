@@ -28,8 +28,8 @@ public class BestSellersController extends AController
 		
 		String productUrl = getProductUrl(shoppingId, customerId);
 		model.addAttribute( "productUrl", productUrl);
-		model.addAttribute( "promotional", getPromotional() );	
-		setupFrontend( model, shoppingId, customerId );
+		
+		setupUrl( model, shoppingId, customerId );
 		
 		return "best-sellers";
 	}

@@ -13,7 +13,7 @@ import eu.cloudscale.showcase.db.model.IAuthor;
 import eu.cloudscale.showcase.db.model.hibernate.Author;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class AuthorDaoImpl extends DaoImpl<IAuthor> implements IAuthorDao
 {
 	public AuthorDaoImpl()

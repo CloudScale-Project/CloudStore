@@ -10,6 +10,7 @@ import eu.cloudscale.showcase.db.model.IShoppingCart;
 public interface IService extends IDaos
 {
 	
+	@SuppressWarnings( "rawtypes" )
     public List getNewProducts(String category);
 
 	public IShoppingCart doCart(Integer shoppingId, Integer itemId,

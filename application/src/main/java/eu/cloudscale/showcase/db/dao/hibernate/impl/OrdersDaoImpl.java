@@ -14,7 +14,7 @@ import eu.cloudscale.showcase.db.model.IOrders;
 import eu.cloudscale.showcase.db.model.hibernate.Orders;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class OrdersDaoImpl extends DaoImpl<IOrders> implements IOrdersDao
 {
 	public OrdersDaoImpl()
@@ -39,7 +39,7 @@ public class OrdersDaoImpl extends DaoImpl<IOrders> implements IOrdersDao
     public IOrders getMostRecentOrder(ICustomer customer)
     {
 
-		String hql16 = "SELECT O FROM Orders as O, Customer as C WHERE O.customer.CId = C.CId AND C.CUname = :cid ORDER BY O.ODate, O.OId DESC";
+		String hql16 = "SELECT O FROM Orders as O, Customer as C WHERE O.customer.CId = C.CId AND C.CId = :cid ORDER BY O.ODate, O.OId DESC";
 		Query query16 = getCurrentSession().createQuery( hql16 );
 		query16.setMaxResults( 1 );
 		query16.setParameter( "cid", customer.getCId() );

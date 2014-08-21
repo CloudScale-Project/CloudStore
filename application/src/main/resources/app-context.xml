@@ -5,6 +5,7 @@
 			http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<!-- These variables are replaced with ones defined in pom.xml -->
-	<import resource="classpath:cache.xml" />
-	<import resource="classpath:${eu.cloudscale.datasource}.xml" />
+	<import resource="cache.xml" />
+	<import resource="${eu.cloudscale.datasource}" />
+	<bean id="generator" class="eu.cloudscale.showcase.generate.Generate" />
 </beans>

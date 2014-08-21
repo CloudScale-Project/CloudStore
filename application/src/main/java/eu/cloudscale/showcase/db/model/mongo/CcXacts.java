@@ -46,7 +46,7 @@ public class CcXacts implements ICcXacts, Serializable
 
 	private Date     cxExpiry;
 
-	private Integer cxAuthId;
+	private String cxAuthId;
 
 	private Double   cxXactAmt;
 
@@ -140,15 +140,15 @@ public class CcXacts implements ICcXacts, Serializable
 	}
 
 	@Override
-	public IAuthor getCxAuthId()
+	public String getCxAuthId()
 	{
-		return DatabaseHelper.getDatabase().getAuthorDaoImpl().findById( this.cxAuthId );
+		return this.cxAuthId;
 	}
 
 	@Override
-	public void setCxAuthId(IAuthor cxAuthId)
+	public void setCxAuthId(String cxAuthId)
 	{
-		this.cxAuthId = cxAuthId.getAId();
+		this.cxAuthId = cxAuthId;
 	}
 
 	@Override

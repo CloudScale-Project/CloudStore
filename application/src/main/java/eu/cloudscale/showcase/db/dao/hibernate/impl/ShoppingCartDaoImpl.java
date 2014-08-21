@@ -17,7 +17,7 @@ import eu.cloudscale.showcase.db.model.IShoppingCartLine;
 import eu.cloudscale.showcase.db.model.hibernate.ShoppingCart;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class ShoppingCartDaoImpl extends DaoImpl<IShoppingCart> implements IShoppingCartDao
 {
 
@@ -33,9 +33,9 @@ public class ShoppingCartDaoImpl extends DaoImpl<IShoppingCart> implements IShop
 	}
 
     @Override
-    @Transactional(readOnly=false)
     public Integer createEmptyCart()
     {
+    	
 		IShoppingCart sc = new ShoppingCart();
 		sc.setScTime( new Date() );
 		shrani( sc );
@@ -45,6 +45,7 @@ public class ShoppingCartDaoImpl extends DaoImpl<IShoppingCart> implements IShop
 
     @SuppressWarnings( "rawtypes" )
     @Override
+    @Transactional
     public IShoppingCart findById(Integer shoppingId)
     {
     	Session session = getCurrentSession();

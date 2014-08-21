@@ -12,7 +12,7 @@ import eu.cloudscale.showcase.db.model.IAddress;
 import eu.cloudscale.showcase.db.model.hibernate.Address;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class AddressDaoImpl extends DaoImpl<IAddress> implements IAddressDao
 {
 	public AddressDaoImpl()

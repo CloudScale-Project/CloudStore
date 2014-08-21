@@ -1,6 +1,7 @@
 package eu.cloudscale.showcase.db.model.mongo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import eu.cloudscale.showcase.db.IService;
 import eu.cloudscale.showcase.db.common.DatabaseHelper;
 import eu.cloudscale.showcase.db.model.IAddress;
+import eu.cloudscale.showcase.db.model.ICcXacts;
 import eu.cloudscale.showcase.db.model.ICustomer;
 import eu.cloudscale.showcase.db.model.IOrderLine;
 import eu.cloudscale.showcase.db.model.IOrders;
@@ -55,6 +57,10 @@ public class Orders implements IOrders, Serializable
 	private Date           OShipDate;
 
 	private String         OStatus;
+	
+	private List<Integer> ccXactIds;
+
+	private List<Integer> orderLinesIds;
 	
 	public Orders()
 	{

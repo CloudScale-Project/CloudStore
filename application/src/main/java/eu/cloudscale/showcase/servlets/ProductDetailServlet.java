@@ -30,21 +30,29 @@ public class ProductDetailServlet extends AController
 					Locale locale, 
 					Model model)
 	{
-		HttpSession session = request.getSession(false);
-				
-		IItemDao itemDao = service.getItemDaoImpl();
-		IItem item = itemDao.findById(itemId);
-		
-		String addToShoppingCartUrl = buildAddToShoppingCartUrl(shoppingId, customerId, itemId);
-		model.addAttribute( "addToShoppingCartUrl", addToShoppingCartUrl);
-		
-		String adminUrl = buildAdminUrl(shoppingId, customerId, itemId);
-		model.addAttribute( "adminUrl", adminUrl );
-		
-		model.addAttribute( "item", item);
-		setupFrontend( model, shoppingId, customerId );
-		
+		try 
+		{
+    		HttpSession session = request.getSession(false);
+    				
+    		IItemDao itemDao = service.getItemDaoImpl();
+    		IItem item = itemDao.findById(itemId);
+    		
+    		String addToShoppingCartUrl = buildAddToShoppingCartUrl(shoppingId, customerId, itemId);
+    		model.addAttribute( "addToShoppingCartUrl", addToShoppingCartUrl);
+    		
+    		String adminUrl = buildAdminUrl(shoppingId, customerId, itemId);
+    		model.addAttribute( "adminUrl", adminUrl );
+    		
+    		model.addAttribute( "item", item);
+    		setupUrl( model, shoppingId, customerId );
+    		
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		return "product_detail";
+
 	}
 
 	private String buildAddToShoppingCartUrl(Integer shoppingId, Integer customerId, Integer itemId)
@@ -52,8 +60,9 @@ public class ProductDetailServlet extends AController
 		String url = getUrl2(shoppingId, customerId, "/shopping-cart");
 		if( url.equals( "/shopping-cart" ))
 			url += "?";
-		
-		url += "&I_ID=" + itemId + "&QTY=1&ADD_FLAG=Y";
+		else
+			url += "&";
+		url += "I_ID=" + itemId + "&QTY=1&ADD_FLAG=Y";
 		return url;
     }
 

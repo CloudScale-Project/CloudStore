@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.cloudscale.showcase.db.AService;
 import eu.cloudscale.showcase.db.dao.IAddressDao;
@@ -21,7 +22,7 @@ import eu.cloudscale.showcase.db.model.IItem;
 
 @SuppressWarnings( "unchecked" )
 @Service
-//@Transactional(readOnly=true)
+@Transactional
 public class HibernateService extends AService
 {
 	@Autowired

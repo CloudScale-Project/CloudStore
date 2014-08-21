@@ -33,9 +33,9 @@ public interface ICcXacts
 
 	public void setCxExpiry(Date cxExpiry);
 
-	public IAuthor getCxAuthId();
+	public String getCxAuthId();
 
-	public void setCxAuthId(IAuthor cxAuthId);
+	public void setCxAuthId(String cxAuthId);
 
 	public Double getCxXactAmt();
 

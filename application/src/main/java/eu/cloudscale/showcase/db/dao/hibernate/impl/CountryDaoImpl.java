@@ -13,10 +13,9 @@ import eu.cloudscale.showcase.db.model.ICountry;
 import eu.cloudscale.showcase.db.model.hibernate.Country;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class CountryDaoImpl extends DaoImpl<ICountry> implements ICountryDao
 {
-	private String tableName = "country";
 
 	public CountryDaoImpl()
 	{
@@ -62,11 +61,4 @@ public class CountryDaoImpl extends DaoImpl<ICountry> implements ICountryDao
 	{
 		return new Country();
 	}
-    
-    @Override
-    public void createTable()
-    {
-    	String query = "CREATE TABLE IF NOT EXISTS " + this.tableName;
-    	getCurrentSession().createSQLQuery( query );
-    }
 }

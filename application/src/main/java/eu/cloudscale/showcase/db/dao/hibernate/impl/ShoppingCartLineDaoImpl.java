@@ -14,7 +14,7 @@ import eu.cloudscale.showcase.db.model.IShoppingCartLine;
 import eu.cloudscale.showcase.db.model.hibernate.ShoppingCartLine;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class ShoppingCartLineDaoImpl extends DaoImpl<IShoppingCartLine> implements IShoppingCartLineDao
 {
 

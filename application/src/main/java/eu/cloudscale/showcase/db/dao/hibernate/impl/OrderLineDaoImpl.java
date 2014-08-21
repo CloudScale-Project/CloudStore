@@ -14,7 +14,7 @@ import eu.cloudscale.showcase.db.model.IOrders;
 import eu.cloudscale.showcase.db.model.hibernate.OrderLine;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class OrderLineDaoImpl extends DaoImpl<IOrderLine> implements IOrderLineDao
 {
 

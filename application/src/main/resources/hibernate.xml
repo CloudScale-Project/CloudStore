@@ -18,7 +18,7 @@
 			http://www.springframework.org/schema/cache/spring-cache.xsd">
 	
 	<context:property-placeholder
-		location="${eu.cloudscale.showcase.generate.properties}" />
+		location="classpath:database/database.hibernate.properties" />
 		
 	<context:component-scan base-package="eu.cloudscale.showcase.db.dao.hibernate" />
 
@@ -32,19 +32,16 @@
 		<property name="user" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
 		<!-- these are C3P0 properties -->
-		<property name="acquireIncrement" value="1" />
-		<property name="minPoolSize" value="4" />
-		<property name="maxPoolSize" value="570" />
-		<property name="maxIdleTime" value="30" />
-<!-- 		<property name="maxConnectionAge" value="180" /> -->
+		<property name="acquireIncrement" value="2" />
+		<property name="minPoolSize" value="5" />
+		<property name="maxPoolSize" value="${connection_pool_size}" />
+		<!-- <property name="maxIdleTime" value="30" /> -->
 		<!-- <property name="debugUnreturnedConnectionStackTraces" value="true" 
 			/> -->
-		<property name="initialPoolSize" value="4" />
-		<property name="idleConnectionTestPeriod" value="5" />
-<!-- 		<property name="checkoutTimeout" value="60000" /> -->
-<!-- 		<property name="maxIdleTimeExcessConnections" value="30" /> -->
-<!-- 		<property name="unreturnedConnectionTimeout" value="60" /> -->
-<!-- 		<property name="debugUnreturnedConnectionStackTraces" value="true" /> -->
+		<property name="initialPoolSize" value="5" />
+		<!-- <property name="idleConnectionTestPeriod" value="10" /> -->
+		<!-- <property name="checkoutTimeout" value="500" /> -->
+		<!-- <property name="unreturnedConnectionTimeout" value="30" /> -->
 		<!-- <property name="automaticTestTable" value="conTest" /> -->
 <!-- 		<property name="testConnectionOnCheckin" value="true" /> -->
 <!-- 		<property name="testConnectionOnCheckout" value="true" /> -->
@@ -52,18 +49,16 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		
 		<property name="packagesToScan" value="eu.cloudscale.showcase.db.dao" />
 		<property name="hibernateProperties">
 			<props>
-<!-- 				<prop key="hibernate.hbm2ddl.auto">create</prop> -->
 				<prop key="hibernate.jdbc.batch_size">50</prop>
 				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.dialect">${jdbc.hibernate.dialect}</prop>
 				<prop key="hibernate.max_fetch_depth">4</prop>
+<!-- 				<prop key="hibernate.hbm2ddl.auto">create</prop> -->
 				<!-- <prop key="hibernate.connection.release_mode">after_statement</prop> -->
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
@@ -95,4 +90,5 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	<bean id="generate" class="eu.cloudscale.showcase.generate.GenerateHibernate" />
 </beans>

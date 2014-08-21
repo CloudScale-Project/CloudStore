@@ -90,7 +90,7 @@ public class ShoppingCartController extends AController
 		}
 		
 		model.addAttribute("errors", errors);
-		setupFrontend(model, shoppingId, customerId);
+		setupUrl(model, shoppingId, customerId);
 		return "shopping-cart";
 	}
 

@@ -86,7 +86,7 @@ public class BuyConfirmController extends AController
 		
 		model.addAttribute("errors", errors);
 		model.addAttribute("results", res);
-		setupFrontend( model, shoppingId, customerId );
+		setupUrl( model, shoppingId, customerId );
 		return "buy-confirm";
 	}
 

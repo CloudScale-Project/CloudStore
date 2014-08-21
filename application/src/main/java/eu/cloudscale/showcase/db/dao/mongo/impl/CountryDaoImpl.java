@@ -60,9 +60,4 @@ public class CountryDaoImpl extends DaoImpl<ICountry> implements ICountryDao
 		
 		return super.shrani( object );
 	}
-
-	@Override
-    public void createTable()
-    {
-    }
 }

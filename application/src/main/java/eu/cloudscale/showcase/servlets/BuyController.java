@@ -166,10 +166,10 @@ public class BuyController extends AController
 		model.addAttribute( "cart", cart );
 		model.addAttribute( "customer", customer );
 		
-//		if( cart != null )
+		if( cart != null )
 //			model.addAttribute( "subTotal", getSubTotal( cart.getShoppingCartLines() ) );
 
-		setupFrontend(model, shoppingId, customerId);
+		setupUrl(model, shoppingId, customerId);
 		return "buy";
 	}
 

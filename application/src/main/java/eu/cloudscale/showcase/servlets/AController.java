@@ -1,14 +1,9 @@
 package eu.cloudscale.showcase.servlets;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.ui.Model;
 
 import eu.cloudscale.showcase.db.IService;
@@ -84,7 +79,7 @@ public abstract class AController
 	    return getUrl2( shoppingId, customerId, "/order-inquiry" );
     }
 	
-	protected void setupFrontend(Model model, Integer shoppingId, Integer customerId)
+	protected void setupUrl(Model model, Integer shoppingId, Integer customerId)
 	{
 		String shoppingCartUrl = getShoppingCartUrl( shoppingId, customerId );
 		model.addAttribute( "shoppingCartUrl", shoppingCartUrl );
@@ -97,25 +92,7 @@ public abstract class AController
 		
 		String orderInquiryUrl = getOrderInquiryUrl(shoppingId, customerId);
 		model.addAttribute( "orderInquiryUrl", orderInquiryUrl );
-		
-		model.addAttribute( "cssResourceUrl", getApplicationProperties().get( "eu.cloudscale.files.url.css" ));
-		model.addAttribute( "imgResourceUrl", getApplicationProperties().get( "eu.cloudscale.files.url.img" ));
-		model.addAttribute( "jsResourceUrl", getApplicationProperties().get( "eu.cloudscale.files.url.js" ));
 	}
 
-	protected Properties getApplicationProperties()
-	{
-		Resource resource = new ClassPathResource("app.properties");
-		Properties props = null;
-		try
-        {
-	        props = PropertiesLoaderUtils.loadProperties(resource);
-        }
-        catch ( IOException e )
-        {
-	        e.printStackTrace();
-        }
-		
-		return props;
-	}
+	
 }

@@ -8,7 +8,5 @@ public interface ICountryDao extends IDao<ICountry>
 	public ICountry findById(int id);
 
 	public ICountry getByName(String country);
-	
-	public void createTable();
 
 }

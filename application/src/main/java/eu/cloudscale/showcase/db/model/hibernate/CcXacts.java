@@ -43,7 +43,7 @@ public class CcXacts implements ICcXacts
 
 	private Date     cxExpiry;
 
-	private IAuthor  cxAuthId;
+	private String  cxAuthId;
 
 	private Double   cxXactAmt;
 
@@ -130,17 +130,17 @@ public class CcXacts implements ICcXacts
 		this.cxExpiry = cxExpiry;
 	}
 
-//	@Column( name = "CX_AUTH_ID", length = 15 )
-	@OneToOne( targetEntity=Author.class, fetch=FetchType.EAGER)
-	@JoinColumn( name="CX_AUTH_ID" )
+	@Column( name = "CX_AUTH_ID", length = 15 )
+//	@OneToOne( targetEntity=Author.class, fetch=FetchType.EAGER)
+//	@JoinColumn( name="CX_AUTH_ID" )
 	@Override
-	public IAuthor getCxAuthId()
+	public String getCxAuthId()
 	{
 		return this.cxAuthId;
 	}
 
 	@Override
-	public void setCxAuthId(IAuthor cxAuthId)
+	public void setCxAuthId(String cxAuthId)
 	{
 		this.cxAuthId = cxAuthId;
 	}

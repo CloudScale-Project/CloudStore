@@ -49,7 +49,7 @@ public class OrderInquiryController extends AController
 			model.addAttribute( "shoppingId", SHOPPING_ID );
 		}
 
-		setupFrontend( model, SHOPPING_ID, C_ID );
+		setupUrl( model, SHOPPING_ID, C_ID );
 		return "order-inquiry";
 	}
 

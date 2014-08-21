@@ -14,7 +14,7 @@ import eu.cloudscale.showcase.db.model.ICustomer;
 import eu.cloudscale.showcase.db.model.hibernate.Customer;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class CustomerDaoImpl extends DaoImpl<ICustomer> implements ICustomerDao
 {
 

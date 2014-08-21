@@ -14,7 +14,7 @@ import eu.cloudscale.showcase.db.model.ICcXacts;
 import eu.cloudscale.showcase.db.model.hibernate.CcXacts;
 
 @Repository
-@Transactional(readOnly=true)
+@Transactional
 public class CcXactsDaoImpl extends DaoImpl<ICcXacts> implements ICcXactsDao
 {
 	

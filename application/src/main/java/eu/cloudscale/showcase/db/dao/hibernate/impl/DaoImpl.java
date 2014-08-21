@@ -1,12 +1,14 @@
 package eu.cloudscale.showcase.db.dao.hibernate.impl;
 
+import javax.naming.NamingException;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cloudscale.showcase.db.dao.IDao;
 
-@Transactional(readOnly=true)
+@Transactional
 public class DaoImpl<T> implements IDao<T>
 {
 	protected int count = 1;
@@ -18,6 +20,15 @@ public class DaoImpl<T> implements IDao<T>
 	
 	public DaoImpl(SessionFactory sessionFactory)
 	{
+		try
+        {
+	        System.out.println("SessionFactory = " + sessionFactory.getReference());
+        }
+        catch ( NamingException e )
+        {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }
 		this.sessionFactory = sessionFactory;
 	}
 	
@@ -28,7 +39,6 @@ public class DaoImpl<T> implements IDao<T>
     }
 	
 	@Override
-	@Transactional(readOnly=false)
 	public T shrani(T object) 
 	{	
     	getCurrentSession().saveOrUpdate( object );

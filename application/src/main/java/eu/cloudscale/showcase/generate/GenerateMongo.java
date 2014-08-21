@@ -5,7 +5,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.omg.CosNaming._BindingIteratorImplBase;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.stereotype.Component;
 
+import eu.cloudscale.showcase.db.IService;
+import eu.cloudscale.showcase.db.common.ContextHelper;
 import eu.cloudscale.showcase.db.dao.IAddressDao;
 import eu.cloudscale.showcase.db.dao.IAuthorDao;
 import eu.cloudscale.showcase.db.dao.ICcXactsDao;
@@ -20,12 +24,13 @@ import eu.cloudscale.showcase.db.model.IOrderLine;
 import eu.cloudscale.showcase.db.model.IOrders;
 import eu.cloudscale.showcase.db.model.mongo.Item;
 
+@Component
 public class GenerateMongo extends AGenerate
 {
 	
 	public GenerateMongo()
 	{
-		super();
+
 	}
 
 	@Override
@@ -56,7 +61,7 @@ public class GenerateMongo extends AGenerate
 		int CX_NUM;
 		String CX_NAME;
 		java.sql.Date CX_EXPIRY;
-		Integer CX_AUTH_ID;
+		String CX_AUTH_ID;
 		int CX_CO_ID;
 
 		System.out.println( "Populating ORDERS, ORDER_LINES, CC_XACTS with "
@@ -64,14 +69,14 @@ public class GenerateMongo extends AGenerate
 
 		System.out.print( "Complete (in 10,000's): " );
 		
-		ICustomerDao customerDao = super.db.getCustomerDaoImpl();
-		IAuthorDao authorDao = super.db.getAuthorDaoImpl();
-		IAddressDao addressDao = super.db.getAddressDaoImpl();
-		IItemDao itemDao = super.db.getItemDaoImpl();
-		ICountryDao countryDao = super.db.getCountryDaoImpl();
-		IOrdersDao ordersDao = super.db.getOrdersDaoImpl();
-		IOrderLineDao orderLineDao = super.db.getOrderLineDaoImpl();
-		ICcXactsDao ccXactsDao = super.db.getCcXactsDaoImpl();
+		ICustomerDao customerDao = super.service.getCustomerDaoImpl();
+		IAuthorDao authorDao = super.service.getAuthorDaoImpl();
+		IAddressDao addressDao = super.service.getAddressDaoImpl();
+		IItemDao itemDao = super.service.getItemDaoImpl();
+		ICountryDao countryDao = super.service.getCountryDaoImpl();
+		IOrdersDao ordersDao = super.service.getOrdersDaoImpl();
+		IOrderLineDao orderLineDao = super.service.getOrderLineDaoImpl();
+		ICcXactsDao ccXactsDao = super.service.getCcXactsDaoImpl();
 		
 		for ( int i = 1; i <= NUM_ORDERS; i++ )
 		{
@@ -145,7 +150,7 @@ public class GenerateMongo extends AGenerate
 			cal = new GregorianCalendar();
 			cal.add( Calendar.DAY_OF_YEAR, getRandomInt( 10, 730 ) );
 			CX_EXPIRY = new java.sql.Date( cal.getTime().getTime() );
-			CX_AUTH_ID = getRandomInt( 1, NUM_AUTHORS );
+			CX_AUTH_ID = getRandomAString( 15 );
 			CX_CO_ID = getRandomInt( 1, 92 );
 					
 			ICcXacts ccXacts = ccXactsDao.getObject();
@@ -156,7 +161,7 @@ public class GenerateMongo extends AGenerate
 			ccXacts.setCxNum( CX_NUM );
 			ccXacts.setCxName( CX_NAME );
 			ccXacts.setCxExpiry( CX_EXPIRY );
-			ccXacts.setCxAuthId( authorDao.findById( CX_AUTH_ID ) );
+			ccXacts.setCxAuthId( CX_AUTH_ID );
 			ccXacts.setCxXactAmt( O_TOTAL );
 			ccXacts.setCxXactDate( O_SHIP_DATE );
 			
@@ -171,5 +176,14 @@ public class GenerateMongo extends AGenerate
 
 		System.out.println( "" );
     }
+
+	@Override
+	public void dropTables(String[] tables) {
+		MongoOperations mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
+		for (String table : tables)
+		{
+			mongoOperation.dropCollection(table);
+		}
+	}
 
 }

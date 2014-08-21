@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -27,11 +28,6 @@
 
 	<beans:bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
 		<beans:property name="templateResolver" ref="templateResolver" />
-		<beans:property name="additionalDialects">
-			<beans:set>
-				<beans:bean class="nz.net.ultraq.thymeleaf.LayoutDialect" />
-			</beans:set>
-		</beans:property>
 	</beans:bean>
 
 	<beans:bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">

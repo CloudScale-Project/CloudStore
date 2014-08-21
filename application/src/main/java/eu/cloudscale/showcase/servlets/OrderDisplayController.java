@@ -83,10 +83,12 @@ public class OrderDisplayController extends AController
 			model.addAttribute( "order", order );
 			model.addAttribute( "orderLines", orderLines );
 		}
+		else
+		{
+			model.addAttribute( "errors", errors);
+		}
 		
-		model.addAttribute( "errors", errors);
-		
-		setupFrontend( model, shoppingId, customerId );
+		setupUrl( model, shoppingId, customerId );
 		return "order-display";
 	}
 }
