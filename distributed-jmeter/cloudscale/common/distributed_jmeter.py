@@ -1,8 +1,6 @@
 import logging
 from cloudscale import models
-
-logger = logging.getLogger(__name__)
-
+import time
 
 class DistributedJmeter(object):
 
@@ -10,10 +8,9 @@ class DistributedJmeter(object):
         self.pid = str(scenario_path.split('/')[-1][:-4])
 
     def log(self, msg, fin=0):
-        logger.info(msg)
         db_log = models.Log()
         db_log.process_id = self.pid
-        db_log.log = msg
+        db_log.log = "[%s] %s" % (time.strftime("%H:%M:%S"), msg)
         db_log.finished = fin
         db_log.save()
 

@@ -1,20 +1,23 @@
 import boto, boto.ec2
+
 import sys, os, time
 import paramiko
 import subprocess
+import select
 import logging
-from cloudscale.common.distributed_jmeter import DistributedJmeter
-
+import thread
+from threading import Thread
+from .common.distributed_jmeter import DistributedJmeter
+from scripts.meet_sla_req import check
 logger = logging.getLogger(__name__)
 
 class CreateInstance(DistributedJmeter):
 
-    def __init__(self, config_path, cfg, key_pair, key_name, scenario_path, num_slaves):
+    def __init__(self, cfg, scenario_path):
         super(CreateInstance, self).__init__(scenario_path)
         self.scenario_path = scenario_path
-        self.num_slaves = num_slaves
-        self.key_pair = key_pair
-        self.key_name = key_name
+        self.key_pair = cfg.get('EC2', 'key_pair')
+        self.key_name = cfg.get('EC2', 'key_name')
         self.cfg = cfg
         self.pid = str(scenario_path.split('/')[-1][:-4])
         self.conn = boto.ec2.connect_to_region(self.cfg.get('EC2', 'region'),
@@ -22,99 +25,132 @@ class CreateInstance(DistributedJmeter):
                                                aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
         self.create_security_groups()
 
-        slaves = []
+        masters = []
         for i in xrange(int(self.cfg.get('EC2', 'num_jmeter_slaves'))):
-            instance = self.create_instance("Creating slave instance {0} ...".format(i+1))
-            slaves.append(instance)
+            instance = self.create_instance("Creating master instance {0} ...".format(i+1))
+	    time.sleep(30)
+            self.log(instance.ip_address)
+	    self.setup_master(instance)
+            masters.append(instance)
 
-        self.log("Please wait one minute for status checks ...")
-        time.sleep(60) # wait for status checks
-        self.log("Setting up slaves ...")
-        self.setup_slaves(slaves)
-        instance = self.create_instance("Creating master instance ... ")
-        self.log("Please wait one minute for status checks ...")
-        time.sleep(60) # wait for status checks
-        self.log("Setting up master ...")
-        self.setup_master(slaves, instance)
-        #self.write_config(config_path, instance)
+	self.run_masters(masters)
 
-
-
-    def setup_master(self, slaves, instance):
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-        #ip_addr = '54.194.221.83'
+    def setup_master(self, instance):
         ip_addr = instance.ip_address
 
-        if self.key_pair:
-            ssh.connect(ip_addr, username="ubuntu", key_filename=os.path.abspath(self.key_pair))
-        else:
-            ssh.connect(ip_addr, username="ubuntu", password="root")
+	    ssh = self.ssh_to_instance(ip_addr)
 
         scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
         dirname = os.path.abspath(os.path.dirname(__file__))
+        _, stdout, _ = ssh.exec_command('rm -rf /home/ubuntu/*')
+        stdout.readlines()
 
         self.log("Transfering jmeter_master.tar.gz ...")
-        scp.put( dirname + '/../scripts/jmeter_master.tar.gz', 'jmeter.tar.gz')
+        scp.put( dirname + '/../scripts/jmeter_master.tar.gz', '/home/ubuntu/jmeter.tar.gz')
+
 
         self.log("Transfering JMeter scenario ...")
         scp.put( self.scenario_path, 'scenario.jmx')
 
-        self.log("Installing Java 7 on master ...")
-        _, stdout, _ = ssh.exec_command("sudo apt-get -y install openjdk-7-jdk; tar xvf jmeter.tar.gz")
+        self.log("Unpacking JMeter ...")
+        _, stdout, _ = ssh.exec_command("tar xvf jmeter.tar.gz")
         stdout.readlines()
 
-        ip_addresses = [instance.private_ip_address for instance in slaves]
-        # ip_addresses = ['172.31.31.9', '172.31.26.205']
-        cmd = "~/jmeter/bin/jmeter -n -t ~/scenario.jmx -R %s -l scenario.jtl -j scenario.log" % ",".join(ip_addresses)
-        self.log("Executing your JMeter scenario. This can take a while. Please wait ...")
-        stdin, stdout, stderr = ssh.exec_command(cmd)
-        # wait for JMeter to execute
+        _, stdout, _ = ssh.exec_command("find . -iname '._*' -exec rm -rf {} \;")
         stdout.readlines()
 
-        # get reports
-        resultspath = "{0}/../static/results/".format(dirname)
+    def ssh_to_instance(self, ip_addr):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if self.key_pair:
+            ssh.connect(ip_addr, username="ubuntu", key_filename=os.path.abspath(self.key_pair))
+        else:
+            ssh.connect(ip_addr, username="ubuntu", password="")
+	return ssh
+
+    def run_masters(self, instances):
 
         tmp_userpath = "/tmp/{0}".format(os.path.basename(self.scenario_path)[:-4])
-        os.makedirs(tmp_userpath, 0777)
-        scp.get("/home/ubuntu/scenario.log", "{0}/{1}".format(tmp_userpath, "scenario.log"))
-        scp.get("/home/ubuntu/scenario.jtl", "{0}/{1}".format(tmp_userpath, "scenario.jtl"))
+	
+        dirname = os.path.abspath(os.path.dirname(__file__))
+        resultspath = "{0}/../static/results/".format(dirname)
+	
+        if not os.path.exists(tmp_userpath):
+            os.makedirs(tmp_userpath, 0777)
+	
+        self.log(resultspath)
 
+        for instance in instances:
+	    self.log("Running JMeter on instance %s" % instance.ip_address)
+	    ssh = self.ssh_to_instance(instance.ip_address)
+            cmd = "(~/jmeter/bin/jmeter -n -t ~/scenario.jmx -l scenario.jtl -j scenario.log -Jstartup_threads=%s -Jrest_threads=%s -Jhost=%s;touch finish)" % (self.cfg.get('EC2', 'startup_threads'), self.cfg.get('EC2', 'rest_threads'), self.cfg.get('EC2', 'host'))
+	    self.log(cmd)
+            self.log("Executing your JMeter scenario. This can take a while. Please wait ...")
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+
+        i = 1
+        threads = []
+        for instance in instances:
+            t = Thread(target=self.check_instance, args=(i, tmp_userpath, resultspath, instance))
+            t.start()
+            threads.append(t)
+            i+=1
+	
+        for t in threads:
+            t.join()
+	
+        for instance in instances:	    
+            self.conn.terminate_instances(instance_ids=[instance.id])
+	
+	
         cmd = "cp -r {0} {1}".format(tmp_userpath, resultspath)
+        self.log(cmd)
         p = subprocess.check_output(cmd.split())
+	
+        resultspath = resultspath + os.path.basename(self.scenario_path)[:-4]
+        filenames = ["{0}/scenario{1}.log".format(resultspath, j) for j in xrange(1,i)]
+        self.log(filenames)
+        with open("{0}/scenario.log".format(resultspath), 'w') as outfile:
+            for fname in filenames:
+                with open(fname) as infile:
+                    for line in infile:
+                        outfile.write(line)
+	
+       	filenames = ["{0}/response-times-over-time{1}.csv".format(resultspath, j) for j in xrange(1, i)]
+        self.log(filenames)
+        with open("{0}/response-times-over-time.csv".format(resultspath), 'w') as outfile:
+            for fname in filenames:
+                with open(fname) as infile:
+                    for line in infile:
+                        outfile.write(line)
 
+        self.log("<br>".join(check("{0}/response-times-over-time.csv".format(resultspath)).split('\n')))
+
+        self.log("Finished!", fin=True)	
+	
+
+    def check_instance(self, i, tmp_userpath, resultspath, instance):
+        cmd = "cat finish"
+
+        ssh = self.ssh_to_instance(instance.ip_address)
+        _, _, stderr = ssh.exec_command(cmd)
+
+        while len(stderr.readlines()) > 0:
+            time.sleep(30)
+            ssh.close()
+            ssh = self.ssh_to_instance(instance.ip_address)
+            _, _, stderr = ssh.exec_command(cmd)
+	
+        self.log("Finishing thread " + str(i))
+
+        scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
+        self.log("JMeter scenario finished. Collecting results")
+        scp.get("/home/ubuntu/scenario.log", "{0}/{1}".format(tmp_userpath, "scenario" + str(i) + ".log"))
+        scp.get("/home/ubuntu/scenario.jtl", "{0}/{1}".format(tmp_userpath, "scenario" + str(i) + ".jtl"))
+        scp.get("/home/ubuntu/response-times-over-time.csv", "{0}/{1}".format(tmp_userpath, "response-times-over-time" + str(i) + ".csv"))
         scp.close()
         ssh.close()
-
-        self.log("Finished! You can now download report files.", 1)
-        instance_ids = [inst.id for inst in slaves] + [instance.id]
-        self.conn.terminate_instances(instance_ids=instance_ids)
-
-    def setup_slaves(self, instances):
-        for instance in instances:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-            if self.key_pair:
-                ssh.connect(instance.ip_address, username="ubuntu", key_filename=os.path.abspath(self.key_pair))
-            else:
-                ssh.connect(instance.ip_address, username="ubuntu", password="root")
-
-            scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
-            dirname = os.path.abspath(os.path.dirname(__file__))
-            self.log("Transfering jmeter_slave.tar.gz ...")
-            scp.put( dirname + '/../scripts/jmeter_slave.tar.gz', 'jmeter.tar.gz')
-
-            self.log( "Installing Java 7 on slave ..." )
-            _, stdout, _ = ssh.exec_command("sudo apt-get -y install openjdk-7-jdk; tar xvf jmeter.tar.gz")
-            stdout.readlines()
-
-            self.log("Starting jmeter-server ...")
-            ssh.exec_command("~/jmeter/bin/jmeter-server &")
-            ssh.close()
-            scp.close()
-
+		                
     def create_security_groups(self):
         self.log( "Creating security groups ..." )
         self.create_security_group('cs-jmeter', 'Security group for JMeter', '8557', '0.0.0.0/0')
@@ -141,7 +177,8 @@ class CreateInstance(DistributedJmeter):
 
     def create_instance(self, msg = "Creating EC2 instance"):
         self.log(msg)
-        res = self.conn.run_instances(self.cfg.get('EC2', 'ami_id'), key_name=self.key_name, instance_type=self.cfg.get('EC2','instance_type'),security_groups=['cs-jmeter', 'ssh'])
+        res = self.conn.run_instances(self.cfg.get('EC2', 'ami_id'), key_name=self.key_name, instance_type=self.cfg.get('EC2','instance_type'),security_groups=['cs-jmeter', 'ssh', 'flask'])
+        time.sleep(30)
         self.wait_available(res.instances[0])
         instance = self.conn.get_all_instances([res.instances[0].id])[0].instances[0]
         return instance
@@ -149,12 +186,12 @@ class CreateInstance(DistributedJmeter):
     def wait_available(self, instance):
         self.log( "Waiting for instance to become available" )
         self.log( "Please wait ..." )
-        status = self.conn.get_all_instances([instance.id])[0].instances[0].state
+        status = self.conn.get_all_instances(instance_ids=[instance.id])[0].instances[0].state
         i=1
         while status != 'running':
             if i%10 == 0:
                 self.log( "Please wait ..." )
-            status = self.conn.get_all_instances([instance.id])[0].instances[0].state
+            status = self.conn.get_all_instances(instance_ids=[instance.id])[0].instances[0].state
             time.sleep(3)
             i=i+1
         self.log( "Instance is up and running" )
@@ -163,44 +200,9 @@ class CreateInstance(DistributedJmeter):
     def write_config(self, config_path, instance):
         self.cfg.save_option(config_path, 'infrastructure', 'remote_user', 'ubuntu')
         self.cfg.save_option(config_path, 'infrastructure', 'ip_address', instance.ip_address)
-        # f = open(os.path.abspath('../infrastructure.ini'), 'w')
-        # f.write('[EC2]\n')
-        # f.write('remote_user=ubuntu\n')
-        # f.write('ip_address=' + instance.ip_address + '\n')
-        # f.close()
 
 def read_config(config_file):
     cfg = boto.Config()
     cfg.load_from_path(os.path.abspath(config_file))
 
     return cfg
-
-def usage(args):
-    print 'Usage:\n $ python %s %s' % (sys.argv[0].split("/")[-1], args)
-
-def check_args(num_args, args_desc):
-    if len(sys.argv) < num_args+1:
-        usage(args_desc)
-        exit(0)
-
-def parse_args():
-    config_file = sys.argv[1]
-
-    if not os.path.isfile(config_file):
-        print config_file + ' doesn\'t exist!'
-        exit(0)
-
-    cfg = read_config(config_file)
-    key_name = cfg.get('EC2', 'key_name')
-    key_pair = os.path.abspath(cfg.get('EC2', 'key_pair'))
-    if not os.path.isfile(key_pair):
-        print key_pair + ' doesn\'t exist!'
-        exit(0)
-
-    return config_file, cfg, key_name, key_pair
-
-
-if __name__ == "__main__":
-    check_args(4, "<config_path> <scenario_path> <num_virtual_users> <num_slaves>")
-    config_path, cfg, key_name, key_pair = parse_args()
-    CreateInstance(config_path, cfg, key_pair, key_name, sys.argv[2], sys.argv[3], sys.argv[4])

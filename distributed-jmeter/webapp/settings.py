@@ -68,7 +68,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Ljubljana'
 
 USE_I18N = True
 
@@ -97,13 +97,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
-EMAIL_HOST = 'mx.xlab.si'
+EMAIL_HOST = 'dummy-host.com'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# CELERY_ALWAYS_EAGER = True
+CELERY_ALWAYS_EAGER = True
 CELERYD_HIJACK_ROOT_LOGGER = False
 
 LOGGING = {

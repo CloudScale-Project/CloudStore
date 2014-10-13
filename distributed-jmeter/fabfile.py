@@ -2,15 +2,15 @@ from __future__ import with_statement
 from fabric.api import sudo, cd, run, settings, require, env, put, local, prefix, task
 from fabric.contrib.files import exists
 
-env.hosts = ['host'] 
-env.user = 'distributedjmeter'
+env.hosts = ['0.0.0.0']
+env.user = '<user>'
 env.django_app = 'webapp'
 # tasks
 @task
 def new():
     env.process_name = 'distributed_jmeter'
-    env.celery_process_name = 'celery'
-    env.user = 'distributedjmeter'
+    env.celery_process_name = 'celery-worker1'
+    env.user = '<user>'
     env.project_name = 'webapp'
     env.postfix=''
     env.path = '/home/%(user)s/%(project_name)s' % env
@@ -127,8 +127,8 @@ def migrate(install=False):
     with cd('%(path)s/releases/current/%(project_name)s' % env):
         with prefix('source %(virtualhost_path)s/bin/activate' % env):
             if install:
-                run('%(virtualhost_path)s/bin/python manage.py syncdb --all' % env)
-                run('%(virtualhost_path)s/bin/python manage.py migrate --fake' % env)
+                run('%(virtualhost_path)s/bin/python manage.py syncdb' % env)
+                #run('%(virtualhost_path)s/bin/python manage.py migrate --fake' % env)
             else:
                 run('%(virtualhost_path)s/bin/python manage.py syncdb --all' % env)
                 run('%(virtualhost_path)s/bin/python manage.py migrate' % env)

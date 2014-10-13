@@ -13,11 +13,15 @@
     <div class="row marketing">
         <div class="log">
         </div>
+        <canvas id="myChart" width="400" height="400"></canvas>
         <div class="download-buttons">
-            <a href="{{ url_prefix }}/static/results/{{ id }}/scenario.jtl" id="download-jtl" class="btn disabled btn-success">
+            <a href="{{ url_prefix }}/static/results/{{ id }}/scenario.jtl" id="download-btn" class="btn disabled btn-success">
                Download JTL file</a>
-            <a href="{{ url_prefix }}/static/results/{{ id }}/scenario.log" id="download-log" class="btn disabled btn-success">
+            <a href="{{ url_prefix }}/static/results/{{ id }}/scenario.log" id="download-btn" class="btn disabled btn-success">
                Download LOG file
+            </a>
+             <a href="{{ url_prefix }}/static/results/{{ id }}/response-times-over-time.csv" id="download-btn" class="btn disabled btn-success">
+               Download response-times-over-time.csv file
             </a>
         </div>
     </div>
@@ -25,7 +29,8 @@
 {% endblock %}
 {% block javascript %}
 <script src="https://code.jquery.com/jquery.js"></script>
-<script src="{% static "js/bootstrap.min.js" %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/Chart.min.js' %}"></script>
 <script type="text/javascript">
     timer = null
     function doPoll(finish) {
@@ -48,8 +53,9 @@
         }
 
         if (data['finished'] == 1) {
-            $('#download-jtl').removeClass('disabled')
-            $('#download-log').removeClass('disabled')
+            $('.download-buttons #download-btn').each(function() {
+                $(this).removeClass('disabled')
+            });
         }
 
         $('.log').html('')
@@ -61,6 +67,12 @@
 
     $(document).ready(function () {
         doPoll()
+
+        // Get context with jQuery - using jQuery's .get() method.
+        var ctx = $("#myChart").get(0).getContext("2d");
+        // This will get the first returned node in the jQuery collection.
+        var myNewChart = new Chart(ctx);
+
     })
 </script>
 {% endblock %}

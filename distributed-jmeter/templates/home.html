@@ -13,7 +13,8 @@
         </p>
 
     </div>
-
+    <form action="{{ url_prefix }}/upload" method="post" name="upload-form" {% if form.is_multipart %} enctype="multipart/form-data" {% endif %} >
+    {% csrf_token %}
     <div class="row marketing">
         {% if errors %}
             {% for message in messages %}
@@ -34,12 +35,25 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
-        <form action="{{ url_prefix }}/upload" method="post" name="upload-form"
-                {% if form.is_multipart %} enctype="multipart/form-data" {% endif %} >
-            {% csrf_token %}
+
+
             <div class="form-group form-scenario-upload">
-                <label for="id_scenario">Scenario</label>
+                <label>Scenario</label>
                 <input type="file" id="scenarioUploadInput" class="form-control" name="scenario" />
+            </div>
+            <div class="form-group">
+                <label>Instance type</label>
+                <select class="form-control" name="instance_type">
+                    <option value="t2.medium">t2.medium</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Number of threads:</label>
+                <input type="text" name="num_threads" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Host</label>
+                <input type="text" name="host" class="form-control"/>
             </div>
             <div class="clearfix"></div>
             <input type="submit" class="btn btn-success" value="Submit" />

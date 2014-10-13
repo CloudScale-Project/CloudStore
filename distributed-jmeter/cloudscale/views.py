@@ -31,7 +31,7 @@ def upload(request):
                 errors = True
             else:
                 filename = handle_uploaded_file(request.FILES['scenario'])
-                start_test(filename)
+                start_test(filename, request.POST['instance_type'], request.POST['num_threads'], request.POST['host'])
         else:
             messages.error(request, "You didn't fill in the form!")
             errors = True
@@ -51,7 +51,7 @@ def handle_uploaded_file(file):
     destination.close()
     return scenario_path
 
-def start_test(scenario_path):
+def start_test(scenario_path, instance_type, num_threads, host):
     from tasks import run_tests
     userpath = "{0}/../static/results/{1}".format(os.path.abspath(os.path.dirname(__file__)), os.path.basename(scenario_path)[:-4])
     try:
@@ -60,7 +60,7 @@ def start_test(scenario_path):
         if e.errno != 17:
             raise
         pass
-    run_tests.delay(scenario_path)
+    run_tests.delay(scenario_path, instance_type, num_threads, host)
 
 def report(request, id):
     dir = "{0}/../static/results/{1}".format(os.path.abspath(os.path.dirname(__file__)), id)
