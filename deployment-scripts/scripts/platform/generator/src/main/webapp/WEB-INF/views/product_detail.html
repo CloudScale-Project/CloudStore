@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorator="/templates/layout">
+  <head>
+  	<title>Product detail page</title>
+  </head>
+<body>
+<div layout:fragment="content">
+
+		<div class="row-fluid marketing">
+			<dl class="dl-horizontal">
+				<dt>Title</dt>
+				<dd th:text="${item.ITitle}">Title</dd>
+
+				<dt>Author</dt>
+				<dd th:text="${item.author.AFname + ' ' + item.author.ALname}">FirstName LastName</dd>
+
+				<dt>Subject</dt>
+				<dd th:text="${item.ISubject}">Subject</dd>
+				
+				<dt>Description</dt>
+				<dd th:text="${item.IDesc}">Description</dd>
+			    
+			    <dt>Suggested Retail Price</dt>
+			    <dd th:text="${item.ISrp}">Suggested Retail Price</dd>
+			    
+			    <dt>Our Price</dt>
+			    <dd th:text="${item.ICost}">Our Price</dd>
+			    
+			    <dt>You save</dt>
+			    <dd th:with="savings=(${item.ISrp} - ${item.ICost})" 
+			         th:text="${#strings.indexOf(savings, '.') == -1} ? ${savings} : ${#strings.substring(savings, 0, #strings.indexOf(savings, '.')+3)}">You save</dd>
+			    
+			    <dt>Backing</dt>
+			    <dd><span th:text="${item.IBacking}">Item Backing</span><span th:text="${item.IPage}">Item page</span></dd>
+			    
+			    <dt>Published by</dt>
+			    <dd th:text="${item.IPublisher}">Publisher</dd>
+			    
+			    <dt>Publication date</dt>
+			    <dd th:text="${item.IPubDate}">Pub date</dd>
+			    
+			    <dt>Avail date</dt>
+			    <dd th:text="${item.IAvail}">Avail date</dd>
+			    
+			    <dt>Dimensions</dt>
+			    <dd th:text="${item.IDimension}">Dimensions</dd>
+			    
+			    <dt>ISBN</dt>
+			    <dd th:text="${item.IIsbn}">ISBN</dd>
+			</dl>
+		</div>
+		<div>
+			<a class="btn" th:href="@{${addToShoppingCartUrl}}">Add to cart</a>
+			&nbsp;<a class="btn" href="#">Update</a>
+			
+		</div>
+	</div>
+</body>
+</html>

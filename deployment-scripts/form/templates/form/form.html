@@ -1,0 +1,19 @@
+{% extends "form/home.html" %}
+{% block content %}
+<div class="row" ng-controller="myController">
+    <div class="col-sm-8 col-sm-offset-2">
+        <input type="hidden" name="uid" value="{{ uid }}" ng-init="formData.uid = '{{ uid }}'" ng-model="formData.uid">
+        <div id="form-container">
+{#            {% verbatim %}#}
+{#            {{ formData }}#}
+{#            {% endverbatim %}#}
+            <!-- use ng-submit to catch the form submission and use our Angular function -->
+{#            <form id="signup-form" name="form" novalidate>#}
+                <!-- our nested state views will be injected here -->
+                <div id="form-views" ng-view></div>
+{#            </form>#}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

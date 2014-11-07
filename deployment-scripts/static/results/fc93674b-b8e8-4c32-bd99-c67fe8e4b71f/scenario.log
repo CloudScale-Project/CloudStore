@@ -1,0 +1,12 @@
+2014/07/25 09:59:38 INFO  - jmeter.util.JMeterUtils: Setting Locale to en_US 
+2014/07/25 09:59:38 INFO  - jmeter.JMeter: Loading user properties from: /home/ubuntu/jmeter/bin/user.properties 
+2014/07/25 09:59:38 INFO  - jmeter.JMeter: Loading system properties from: /home/ubuntu/jmeter/bin/system.properties 
+2014/07/25 09:59:38 FATAL - jmeter.JMeter: An error occurred:  java.lang.IllegalArgumentException: Unknown arg: scenario.jtl
+	at org.apache.jmeter.JMeter.initializeProperties(JMeter.java:602)
+	at org.apache.jmeter.JMeter.start(JMeter.java:294)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.jmeter.NewDriver.main(NewDriver.java:259)
+

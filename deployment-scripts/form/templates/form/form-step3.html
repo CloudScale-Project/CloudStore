@@ -1,0 +1,185 @@
+<!-- form-interests.html -->
+<h2 class="text-center">Configure frontend</h2>
+<hr>
+
+<div class="text-left" ng-if="formData.provider == 'aws'">
+    <div class="well">
+        We require at least these permissions for EC2:
+        <ul>
+            <li>RunInstances</li>
+            <li>StartInstances</li>
+            <li>StopInstances</li>
+            <li>TerminateInstances</li>
+            <li>CreateKeyPair</li>
+            <li>DeleteKeyPair</li>
+        </ul>
+        You can simulate your permissions <a href="https://policysim.aws.amazon.com/home/index.jsp">here</a>
+    </div>
+    <form name="awsForm" novalidate ng-submit="nextStep('/step4', awsForm)">
+        <div class="form-group" ng-class="{'has-error' : submitted && awsForm.access_key.$invalid }">
+            <label>
+                Amazon access key <span tooltip="We won't save your access key" class="glyphicon glyphicon-question-sign"></span>
+            </label>
+            <input name="access_key" type="text" ng-model="formData.fr.access_key" required class="form-control">
+            <span class="help-block"
+                  ng-show="submitted && awsForm.access_key.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && awsForm.secret_key.$invalid}">
+            <label>
+                Amazon secret key <span tooltip="We won't save your secret key"class="glyphicon glyphicon-question-sign"></span>
+            </label>
+            <input name="secret_key" type="text" ng-model="formData.fr.secret_key" required class="form-control">
+            <span class="help-block"
+                  ng-show="submitted && awsForm.secret_key.$invalid">Required</span>
+        </div>
+        <div class="form-group">
+            <label>
+                Do you want autoscaling?
+            </label>
+
+            <div ng-class="{'has-error' : submitted && awsForm.autoscaling.$invalid}">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="formData.fr.autoscaling" required value="yes" name="autoscaling">
+                        Yes
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="formData.fr.autoscaling" required value="no" name="autoscaling">
+                        No
+                    </label>
+                </div>
+
+                <span class="help-block"
+                      ng-show="submitted && awsForm.autoscaling.$invalid">Required</span>
+            </div>
+        </div>
+        <div class="form-group" ng-if="formData.fr.autoscaling == 'no'"
+             ng-class="{'has-error' : submitted && awsForm.num_instances.$invalid}">
+            <label>
+                How many instances do you want?
+            </label>
+            <input type="number" min="1" class="form-control" required name="num_instances"
+                   ng-model="formData.fr.num_instances">
+                <span class="help-block"
+                      ng-show="submitted && awsForm.num_instances.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && awsForm.instance_type.$invalid}">
+            <label>
+                Instance type
+            </label>
+            <select name="instance_type" required ng-model="formData.fr.instance_type"
+                    ng-init="formData.fr.instance_type = ec2_instance_types[1]"
+                    ng-options="value for value in ec2_instance_types" class="form-control">
+            </select>
+                <span class="help-block"
+                      ng-show="submitted && awsForm.instance_type.$invalid">Required</span>
+        </div>
+        <hr>
+        <div class="text-center">
+            <button name="prev" ng-click="prevStep('/step2')" class="btn btn-primary">Prev</button>
+            <button name="next" type="submit" class="btn btn-primary">Next</button>
+        </div>
+    </form>
+</div>
+
+<div ng-if="formData.provider == 'openstack'">
+    <div class="well">
+        If you want to run on your own deployment of OpenStack, you should upload cloud image of Ubuntu 12.04.
+    </div>
+    <form name="openstackForm" novalidate ng-submit="nextStep('/step4', openstackForm)">
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.num_instances.$invalid}">
+            <label>
+                How many instances do you want?
+            </label>
+            <input required min="1" max="10" class="form-control" type="number" name="num_instances" ng-model="formData.fr.num_instances">
+            <span class="help-block" ng-show="submitted && openstackForm.num_instances.$invalid">Required</span>
+        </div>
+        <div class="form-group">
+            <label>
+                Do you want to run on your OpenStack infrastructure?
+            </label>
+            <div ng-class="{'has-error' : submitted && openstackForm.own_infrastructure.$invalid}">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="formData.fr.own_infrastructure" required value="yes" name="own_infrastructure">
+                        Yes
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="formData.fr.own_infrastructure" required value="no" name="own_infrastructure">
+                        No
+                    </label>
+                </div>
+                <span class="help-block"
+                      ng-show="submitted && openstackForm.own_infrastructure.$invalid">Required</span>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.auth_url.$invalid}"
+                 ng-if="formData.fr.own_infrastructure == 'yes'">
+            <label>
+                Authentication url
+            </label>
+            <input required class="form-control" type="text" name="auth_url" ng-model="formData.fr.auth_url">
+            <span class="help-block" ng-show="submitted && openstackForm.auth_url.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.username.$invalid}"
+                 ng-if="formData.fr.own_infrastructure == 'yes'">
+            <label>
+                Username
+            </label>
+            <input required class="form-control" type="text" name="username" ng-model="formData.fr.username">
+            <span class="help-block" ng-show="submitted && openstackForm.username.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.password.$invalid}"
+                 ng-if="formData.fr.own_infrastructure == 'yes'">
+            <label>
+                Password
+            </label>
+            <input required class="form-control" type="password" name="password" ng-model="formData.fr.password">
+            <span class="help-block" ng-show="submitted && openstackForm.password.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.tenant.$invalid}"
+                 ng-if="formData.fr.own_infrastructure == 'yes'">
+            <label>
+                Tenant
+            </label>
+            <input required class="form-control" type="text" name="tenant" ng-model="formData.fr.tenant">
+            <span class="help-block" ng-show="submitted && openstackForm.tenant.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.flavor.$invalid}">
+            <label>
+                Choose flavor <span tooltip="This will load when you fill in your credentials" class="glyphicon glyphicon-question-sign"></span>
+            </label>
+            <select required class="form-control" name="flavor" ng-options="flavor for flavor in flavors" ng-model="formData.fr.flavor">
+            </select>
+            <span class="help-block" ng-show="submitted && openstackForm.flavor.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.image.$invalid}"
+                 ng-if="formData.fr.own_infrastructure == 'yes'">
+            <label>
+                Choose image <span tooltip="This will load when you fill in your credentials" class="glyphicon glyphicon-question-sign"></span>
+            </label>
+            <select required class="form-control" name="image" ng-options="image for image in images" ng-model="formData.fr.image">
+            </select>
+            </span>
+            <span class="help-block" ng-show="submitted && openstackForm.image.$invalid">Required</span>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : submitted && openstackForm.image_username.$invalid}"
+                 ng-if="formData.fr.own_infrastructure == 'yes'">
+            <label>
+                Username as which we can SSH to instance
+            </label>
+            <input required class="form-control" type="text" name="image_username" ng-model="formData.fr.image_username">
+            <span class="help-block" ng-show="submitted && openstackForm.image_username.$invalid">Required</span>
+        </div>
+        <hr>
+        <div class="text-center">
+            <button name="prev" ng-click="prevStep('/step2')" class="btn btn-primary">Prev</button>
+            <button name="next" type="submit" class="btn btn-primary">Next</button>
+        </div>
+    </form>
+</div>
+</div>

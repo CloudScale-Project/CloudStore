@@ -1,0 +1,6 @@
+{% csrf_token %}
+    <div class="alert alert-danger" ng-repeat="error in errors">
+        {%  verbatim %}
+        <span ng-bind-html="trustAsHtml(error)">{{ error }}</span>
+        {% endverbatim %}
+    </div>

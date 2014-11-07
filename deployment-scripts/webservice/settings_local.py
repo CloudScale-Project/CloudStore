@@ -1,0 +1,3 @@
+DEBUG = True
+CELERY_ALWAYS_EAGER = True
+MUTE = False

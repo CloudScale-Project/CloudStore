@@ -1,0 +1,14 @@
+scripts/rds-tpcw-dump.sql
+scripts/config.ini
+scripts/software/showcase/target/*
+.idea/
+webservice/keypairs/*
+paramiko.log
+debug.log
+webservice/users/*
+scripts/jmeter_master.tar.gz
+scripts/jmeter_slave.tar.gz
+*.pyc
+key_pair.pub
+key_pair
+db.sqlite3
