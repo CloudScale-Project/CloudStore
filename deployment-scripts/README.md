@@ -4,39 +4,15 @@ In this folder you will find deployment scripts for showcase for Cloudscale proj
 Scripts are organized in three layers according to cloud environment (infrastructure, platform, software). The ```install.sh``` script encapsulate everything together, but you can execute every script seperatelly.
 
 ##Requirements
-
-**MySQL**
-
-You only need `mysql` command if you use *dump* value for `generate_type` in config.ini (see below) to import data into RDS databases.
-
-On Debian based linux distributions you can do this by:
-
-`$ sudo apt-get install mysql-client`
-
-Please also look in to `platform/aws/dump.sh` file and set the path to the `mysql` command.
-
-**Java**
-
-You will need the Java Development Kit (JDK) to build showcase. 
-
-On Debian based linux distributions you can do this by:
-
-`$ sudo apt-get install openjdk-7-jdk`
-
-**Maven**
-
-Showcases are built with Maven, so you need `mvn` tool to build showcases.
-
-On Debian based linux distributions you can install it by:
-
-`$ sudo apt-get install maven`
-
-**Other**
-
 You can install these requirements with `pip` or `easy_install`:
 
 * paramiko
 * boto
+
+
+
+
+
 
 ##Usage
 We provided scripts for deploying showcase on Amazon Web Services (AWS) and OpenStack. On AWS the showcase is deployed into autiscalability group. On OpenStack is deployed in cluster of 4 machines. 
