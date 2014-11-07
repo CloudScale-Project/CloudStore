@@ -33,6 +33,7 @@ If you want to first install necessary software on your server you can do that b
 
 ```
 $ fab setup
+```
 
 and then deploy the app:
 
