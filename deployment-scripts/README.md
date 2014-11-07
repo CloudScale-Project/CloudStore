@@ -27,6 +27,19 @@ Now run the Django app and access to it on http://localhost:8000/form URL.
 $ python manage.py runserver
 ```
 
+We have also provided a Fabric file for deploying showcase on production servers. Edit *fabfile.py* and edit ```env.*``` settings.
+
+If you want to first install necessary software on your server you can do that by:
+
+```
+$ fab setup
+
+and then deploy the app:
+
+```
+$ fab deploy:install=True
+```
+
 ##Configuration
 **Notice**: If you find `[infrastructure]`, `[software]` or `[platform]` sections in `config.ini`,
 please ignore them. These sections are created internally with our scripts and all          
