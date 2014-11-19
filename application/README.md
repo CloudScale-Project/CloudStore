@@ -1,8 +1,9 @@
 ### Introduction
 
-In this directory you will find the source code for showcase for CloudScale project. The showcase is a webapplication of reimplemented book shop according to TPC-W specifications and it's written in Spring framework.
+In this directory you will find the source code of the CloudStore, a showcase for CloudScale project.
+The showcase is a web application implementing an on-line book shop following the TPC-W specifications, and it's written using the Spring framework.
 
-This is Eclipse project so we recommend to import this project into Eclipse and contuine from there.
+Being an Eclipse project, we recommend to import this project into Eclipse and continue from there.
 
 ### Running from Eclipse
 
