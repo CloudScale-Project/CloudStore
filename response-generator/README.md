@@ -12,6 +12,9 @@ Supported distributions are:
 - [pareto](http://en.wikipedia.org/wiki/Pareto_distribution)
 - [weibull](http://en.wikipedia.org/wiki/Weibull_distribution)
 
+Each distribution have specific parameters by which you can manipulate the end response time in seconds.
+To each distribution we added a **k** parameter which shifts the end response time for **k**.
+
 ### Screenshots
 
 ![Screenshot](https://raw.githubusercontent.com/CloudScale-Project/Showcase/master/response-generator/static/images/screenshot.png)
