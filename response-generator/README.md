@@ -14,4 +14,4 @@ Supported distributions are:
 
 ### Screenshots
 
-![Screenshot](/static/images/screenshot.png?raw=true "Screenshot")
+![Screenshot](https://raw.githubusercontent.com/CloudScale-Project/Showcase/master/response-generator/static/images/screenshot.png)
