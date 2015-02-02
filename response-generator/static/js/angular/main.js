@@ -97,7 +97,7 @@ responseGeneratorApp.service('buildUrlService', function () {
             url = '?alpha=' + attr1 + '&beta=' + attr2 + '&k=' + attr3
         }
         if (dist == 'uniform'){
-            url = '?a=' + attr1 + '&b=' + attr2;
+            url = '?a=' + attr1 + '&b=' + attr2 + '&k=' + attr3;
         }
         if (dist == 'constant')
         {

@@ -16,7 +16,8 @@
     <script src="{{ app_path }}/static/js/jstat.min.js"></script>
     <script src="{{ app_path }}/static/js/angular/main.js"></script>
     <style>
-        .right-bottom .github-fork-ribbon {
+        .right-bottom .github-fork-ribbon,
+        .right .github-fork-ribbon{
             background-color: #648CAF;
         }
     </style>
@@ -26,7 +27,7 @@
     <div class="col-md-12 text-center" style="margin-bottom:20px">
         <div>
             <div class="text-left pull-left" style="margin-top: 20px;">
-                <img src="{{ app_path }}/static/images/logo-CloudScale.png" />
+                <a href="http://www.cloudscale-project.eu"><img src="{{ app_path }}/static/images/logo-CloudScale.png" /></a>
             </div>
             <div class="pull-right" style="margin-top: 27px;">
                 <h2>Response generator</h2>
@@ -77,7 +78,7 @@
         <a ng-href="{{ app_path }}/{{ url|angular }}&test=true" class="btn btn-primary">Get value</a>
     </div>
 
-    <div class="github-fork-ribbon-wrapper right-bottom">
+    <div class="github-fork-ribbon-wrapper right">
         <div class="github-fork-ribbon">
             <a href="https://github.com/Cloudscale-project">Fork us on GitHub</a>
         </div>
