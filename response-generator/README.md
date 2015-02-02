@@ -1,9 +1,9 @@
 ### Description
 
-Response generator is a web application that simulates response times according to chosen distribution.
+[Response generator](https://arcane-meadow-6418.herokuapp.com/) is a web application that simulates response times according to chosen distribution.
 
 Supported distributions are:
-- [uniform](http://en.wikipedia.org/wiki/Uniform_distribution_%28continuous%29)
+- [uniform](http://en.wikipedia.org/wiki/Uniform_distribution_%28continuous%29) 
 - constant
 - [gauss](http://en.wikipedia.org/wiki/Normal_distribution)
 - [gamma](http://en.wikipedia.org/wiki/Gamma_distribution)
@@ -14,6 +14,35 @@ Supported distributions are:
 
 Each distribution have specific parameters by which you can manipulate the end response time in seconds.
 To each distribution we added a **k** parameter which shifts the end response time for **k**.
+
+### Usage
+
+Response generator is designed to be used inside real application as a API call. 
+Each distribution has it's own URL and accepts it's own parameters, parameter **k** and **test=[true|false]** parameter:
+
+Use ```test=true``` if you want to just get the value.
+
+Use ```test=false``` if you want to actually make a delay
+
+**Examples:**
+
+* Gauss distribution has **mu** and **sigma** parameters and we want to just get the value:
+
+  ```
+  /gauss?mu=1&sigma=2&k=0&test=true
+  ```
+  
+* Uniform distribution has **a** and **b** parameters and we want to make a delay:
+  
+  ```
+  /uniform?a=1&b=2&k=0&test=false
+  ```
+  
+* Exponentional distribution has **lambda** parameter and we want to shift the end response time for 10 units and make a delay:
+
+  ```
+  /expo?lambda=1&k=10&test=false
+  ```
 
 ### Screenshots
 
