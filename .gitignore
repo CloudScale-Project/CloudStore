@@ -4,3 +4,4 @@ bin/config.ini
 bin/rds-tpcw-dump-latest.sql
 bin/deployment_scripts.log
 bin/paramiko.log
+cloudscale_deployment_scripts.egg-info
