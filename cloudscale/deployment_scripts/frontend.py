@@ -16,6 +16,7 @@ class Frontend:
     def __init__(self, config, logger):
         self.config = config
         self.logger=logger
+        self.instance_ids = []
 
     def setup_aws_frontend(self):
         self.logger=self.logger
@@ -48,14 +49,11 @@ class Frontend:
             i = aws_create_instance.CreateEC2Instance(cfg=self.config.cfg, logger=self.logger)
             ip_addresses = []
             num_instances = int(self.cfg.get('COMMON', 'num_instances'))
-            for _ in xrange(num_instances):
-                instance = i.create()
-                instances.append(instance)
+            instances = i.create_all(num_instances)
+            for instance in instances:
                 ip_addresses.append(instance.ip_address)
 
             self.config.save('infrastructure', 'ip_address', ','.join(ip_addresses))
-
-
 
             self.ip_addresses = self.cfg.get('infrastructure', 'ip_address').split(",")
             loadbalancer = None
@@ -70,6 +68,7 @@ class Frontend:
             deploy_showcase.DeploySoftware(self)
 
             showcase_url = loadbalancer.dns_name if loadbalancer else instances[0].ip_address
+            self.logger.log("Instance ids: %s" % ",".join([instance.id for instance in instances]))
 
         elif self.cfg.get('EC2', 'is_autoscalable') == 'yes':
             i = aws_create_instance.CreateEC2Instance(cfg=self.config.cfg, logger=self.logger)

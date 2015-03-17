@@ -29,6 +29,7 @@ ami_id = ami-4d5bd93a
 is_autoscalable = no
 cooldown = 300
 remote_user = ubuntu
+instances_identifier = cloudscale
 
 [OPENSTACK]
 username =

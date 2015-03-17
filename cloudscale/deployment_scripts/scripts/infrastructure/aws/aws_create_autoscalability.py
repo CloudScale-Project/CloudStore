@@ -6,6 +6,7 @@ from boto.ec2.autoscale import ScalingPolicy
 import boto.ec2.cloudwatch
 from boto.ec2.cloudwatch import MetricAlarm
 import sys
+from boto.ec2.autoscale.tag import Tag
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
@@ -91,7 +92,8 @@ class Autoscalability:
                                  ['http'],
                                  None,
                                  self.cfg.get('EC2', 'instance_type'),
-				instance_monitoring=True)
+                                 instance_monitoring=True
+            )
 
             self.conn.create_launch_configuration(lc)
             return lc
@@ -105,10 +107,20 @@ class Autoscalability:
         self.logger.log("Creating autoscalability group ...")
 
         try:
+            tag = Tag(
+                key='Name',
+                value = self.cfg.get('EC2', 'instances_identifier'),
+                propagate_at_launch=True,
+                resource_id='cloudscale-as'
+            )
             ag = AutoScalingGroup(group_name='cloudscale-as',
                               load_balancers=[lb_name],
                               availability_zones=self.cfg.get('EC2', 'availability_zones').split(","),
-                              launch_config=lc, min_size=1, max_size=10, connection=self.conn)
+                              launch_config=lc,
+                              min_size=1,
+                              max_size=10,
+                              connection=self.conn,
+                              tags=[tag])
             self.conn.create_auto_scaling_group(ag)
         except boto.exception.BotoServerError as e:
             if e.error_code != 'AlreadyExists':

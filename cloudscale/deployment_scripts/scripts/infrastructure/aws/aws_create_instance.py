@@ -26,8 +26,29 @@ class CreateEC2Instance:
         self.create_security_groups()
         instance = self.create_instance()
         #self.write_config(instance)
-        self.logger.log(instance.id)
+
         return instance
+
+    def create_all(self, num_instances):
+        res = self.conn.run_instances(
+            self.cfg.get('EC2', 'ami_id'),
+            max_count=num_instances,
+            key_name=self.key_name,
+            instance_type=self.cfg.get('EC2','instance_type'),
+            security_groups=['http', 'ssh'],
+            monitoring_enabled=True,
+            placement=self.cfg.get('EC2', 'availability_zones').split(',')[0]
+        )
+
+        instance_ids = []
+        for instance in res.instances:
+            self.wait_available(instance)
+            instance_ids.append(instance.id)
+
+        instances = self.conn.get_all_instances(instance_ids)[0].instances
+        self.conn.create_tags(instance_ids, {'Name': 'cloudscale'})
+
+        return instances
 
     def create_security_groups(self):
         self.logger.log("Creating security groups http and ssh ...")
@@ -49,11 +70,13 @@ class CreateEC2Instance:
             key_name=self.key_name,
             instance_type=self.cfg.get('EC2','instance_type'),
             security_groups=['http', 'ssh'],
+            monitoring_enabled=True,
             placement=self.cfg.get('EC2', 'availability_zones').split(',')[0]
         )
         self.wait_available(res.instances[0])
 
         instance = self.conn.get_all_instances([res.instances[0].id])[0].instances[0]
+        self.conn.create_tags([instance.id], {'Name': 'cloudscale'})
         self.conn.monitor_instances([instance.id])
         return instance
 

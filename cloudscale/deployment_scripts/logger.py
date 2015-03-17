@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(filename='deployment_scripts.log')
+logging.basicConfig(filename='deployment_scripts.log', level=logging.INFO)
 
 class Logger:
     def __init__(self):
