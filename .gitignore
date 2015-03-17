@@ -1,0 +1,6 @@
+*.pyc
+.idea
+bin/config.ini
+bin/rds-tpcw-dump-latest.sql
+bin/deployment_scripts.log
+bin/paramiko.log

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc 
+			http://www.springframework.org/schema/jdbc/spring-jdbc.xsd 
+			http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans.xsd 
+			http://www.springframework.org/schema/tx 
+			http://www.springframework.org/schema/tx/spring-tx.xsd 
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/cache
+			http://www.springframework.org/schema/cache/spring-cache.xsd">
+	
+	<context:property-placeholder
+		location="${eu.cloudscale.showcase.generate.properties}" />
+		
+	<context:component-scan base-package="eu.cloudscale.showcase.db.dao.hibernate" />
+
+	<bean id="service" class="eu.cloudscale.showcase.db.services.HibernateService" />
+	
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- these are C3P0 properties -->
+		<property name="acquireIncrement" value="1" />
+		<property name="minPoolSize" value="4" />
+		<property name="maxPoolSize" value="32" />
+		<property name="maxIdleTime" value="60" />
+<!-- 		<property name="maxConnectionAge" value="180" /> -->
+		<!-- <property name="debugUnreturnedConnectionStackTraces" value="true" 
+			/> -->
+		<property name="initialPoolSize" value="4" />
+		<property name="idleConnectionTestPeriod" value="10" />
+		<property name="checkoutTimeout" value="3000" />
+<!-- 		<property name="maxIdleTimeExcessConnections" value="30" /> -->
+		<property name="unreturnedConnectionTimeout" value="30" />
+		<property name="debugUnreturnedConnectionStackTraces" value="true" />
+		<!-- <property name="automaticTestTable" value="conTest" /> -->
+<!-- 		<property name="testConnectionOnCheckin" value="true" /> -->
+<!-- 		<property name="testConnectionOnCheckout" value="true" /> -->
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		
+		<property name="packagesToScan" value="eu.cloudscale.showcase.db.dao" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.dialect">${jdbc.hibernate.dialect}</prop>
+				<prop key="hibernate.max_fetch_depth">4</prop>
+				<!-- <prop key="hibernate.connection.release_mode">after_statement</prop> -->
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+				</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">classpath:ehcache.xml</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>eu.cloudscale.showcase.db.model.hibernate.Address</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.Author</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.CcXacts</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.Country</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.Customer</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.Item</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.OrderLine</value>
+				<!-- <value>eu.cloudscale.showcase.db.model.rbms.CcXactsId</value> -->
+				<value>eu.cloudscale.showcase.db.model.hibernate.Orders</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.ShoppingCart
+				</value>
+				<value>eu.cloudscale.showcase.db.model.hibernate.ShoppingCartLine
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+</beans>
