@@ -1,5 +1,5 @@
 import subprocess
-from novaclient.v1_1 import client as novaclient
+from novaclient.v2 import client as novaclient
 import time
 import boto
 

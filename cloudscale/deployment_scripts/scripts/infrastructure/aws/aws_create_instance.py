@@ -5,39 +5,37 @@ import time
 import paramiko
 
 import sys, os
+from cloudscale.deployment_scripts.config import Setup
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class CreateEC2Instance:
+class CreateEC2Instance(Setup):
 
-    def __init__(self, cfg, logger):
-        self.key_pair = cfg.get('EC2', 'key_pair')
-        self.key_name = cfg.get('EC2', 'key_name')
-        self.cfg = cfg
+    def __init__(self, config, logger):
+        Setup.__init__(self, config, logger)
+
         self.conn = boto.ec2.connect_to_region(
-            self.cfg.get('EC2', 'region'),
-            aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-            aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key')
+            self.region,
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key
         )
-        self.logger = logger
 
 
     def create(self):
         self.create_security_groups()
         instance = self.create_instance()
-        #self.write_config(instance)
 
         return instance
 
     def create_all(self, num_instances):
         res = self.conn.run_instances(
-            self.cfg.get('EC2', 'ami_id'),
+            self.ami_id,
             max_count=num_instances,
             key_name=self.key_name,
-            instance_type=self.cfg.get('EC2','instance_type'),
+            instance_type=self.instance_type,
             security_groups=['http', 'ssh'],
             monitoring_enabled=True,
-            placement=self.cfg.get('EC2', 'availability_zones').split(',')[0]
+            placement=self.availability_zone
         )
 
         instance_ids = []
@@ -46,7 +44,7 @@ class CreateEC2Instance:
             instance_ids.append(instance.id)
 
         instances = self.conn.get_all_instances(instance_ids)[0].instances
-        self.conn.create_tags(instance_ids, {'Name': 'cloudscale'})
+        self.conn.create_tags(instance_ids, {'Name': self.instance_identifier})
 
         return instances
 
@@ -66,17 +64,17 @@ class CreateEC2Instance:
     def create_instance(self):
         self.logger.log("Creating EC2 instance ...")
         res = self.conn.run_instances(
-            self.cfg.get('EC2', 'ami_id'),
+            self.ami_id,
             key_name=self.key_name,
-            instance_type=self.cfg.get('EC2','instance_type'),
+            instance_type=self.instance_type,
             security_groups=['http', 'ssh'],
             monitoring_enabled=True,
-            placement=self.cfg.get('EC2', 'availability_zones').split(',')[0]
+            placement=self.availability_zone
         )
         self.wait_available(res.instances[0])
 
         instance = self.conn.get_all_instances([res.instances[0].id])[0].instances[0]
-        self.conn.create_tags([instance.id], {'Name': 'cloudscale'})
+        self.conn.create_tags([instance.id], {'Name': self.instance_identifier})
         self.conn.monitor_instances([instance.id])
         return instance
 
@@ -93,16 +91,6 @@ class CreateEC2Instance:
             i=i+1
 
         self.logger.log("Instance is running!")
-
-
-    def write_config(self, instance):
-        self.cfg.save_user_option('infrastructure', 'remote_user', 'ubuntu')
-        self.cfg.save_user_option('infrastructure', 'ip_address', instance.ip_address)
-        # f = open(os.path.abspath('../infrastructure.ini'), 'w')
-        # f.write('[EC2]\n')
-        # f.write('remote_user=ubuntu\n')
-        # f.write('ip_address=' + instance.ip_address + '\n')
-        # f.close()
 
 if __name__ == '__main__':
     check_args(2, "<config_path>")

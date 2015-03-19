@@ -2,20 +2,17 @@
 import boto.ec2
 import time
 import sys
+from cloudscale.deployment_scripts.config import Setup
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
-
-class EC2CreateAMI:
+class EC2CreateAMI(Setup):
 
     def __init__(self, config, logger):
-        self.logger = logger
-        self.cfg = config.cfg
-        self.config = config
-        self.key_name = self.cfg.get('EC2', 'key_name')
-        self.key_pair = self.cfg.get('EC2', 'key_pair')
-        self.conn = boto.ec2.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
+        Setup.__init__(self, config, logger)
+
+        self.conn = boto.ec2.connect_to_region(self.region,
+                                               aws_access_key_id=self.access_key,
+                                               aws_secret_access_key=self.secret_key)
 
         ami_id = self.create_ami(self.cfg.get('infrastructure', 'ip_address'))
         self.config.save('infrastructure', 'ami_id', ami_id)

@@ -9,6 +9,6 @@ if __name__ == "__main__":
         config_path = sys.argv[2]
         infrastructure = sys.argv[1]
         logger = Logger()
-        deploy(config_path, os.path.abspath(os.path.dirname(__file__)), logger)
+        deploy(infrastructure, config_path, os.path.abspath(os.path.dirname(__file__)), logger)
     else:
         print """Usage: python run.py <aws|openstack> <path_to_config>"""

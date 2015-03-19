@@ -8,6 +8,7 @@ setup(
     author_email='simon.ivansek@xlab.si',
     packages=find_packages(),
     package_data={'' : ['*.cfg', '*.sh', '*.conf']},
+    url='http://www.cloudscale-project.eu',
     license='LICENSE.txt',
     description='Deployment scripts for CloudScale project',
     long_description=open('README.txt').read(),

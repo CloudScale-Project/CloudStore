@@ -6,8 +6,8 @@ from cloudscale.deployment_scripts.frontend import Frontend
 from cloudscale.deployment_scripts.scripts.infrastructure.openstack import openstack_remove_all
 
 
-def deploy(config_path, results_dir, logger):
-    config = Config(results_dir, config_path)
+def deploy(infrastructure, config_path, results_dir, logger):
+    config = Config(infrastructure, results_dir, config_path)
     _setup_backend(config, logger)
     _setup_frontend(config, logger)
 

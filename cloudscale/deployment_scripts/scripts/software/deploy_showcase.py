@@ -1,9 +1,7 @@
 import logging
 import time
 import paramiko
-import ConfigParser
-import sys, os
-import subprocess
+import sys
 import requests
 import select
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
@@ -21,7 +19,7 @@ class DeploySoftware:
     def write_db_config(self, ssh, path):
         cfg = "jdbc.dbtype=mysql\n"
 
-        if int(self.props.db_num_instances) > 1:
+        if int(self.props.rds_num_replicas) > 1:
             cfg += 'jdbc.driverClassName=com.mysql.jdbc.ReplicationDriver\n'
             cfg += 'jdbc.url=jdbc:mysql:replication://%s/%s\n' % (self.props.cfg.get('platform', 'urls'), self.props.database_name )
         else:
@@ -29,7 +27,7 @@ class DeploySoftware:
             cfg += 'jdbc.url=jdbc:mysql://%s/%s\n' % (self.props.cfg.get('platform', 'urls'), self.props.database_name)
 
         cfg += 'jdbc.username=%s\n' % self.props.database_user
-        cfg += 'jdbc.password=%s\n' % self.props.database_pass
+        cfg += 'jdbc.password=%s\n' % self.props.database_password
         cfg += 'jdbc.hibernate.dialect=org.hibernate.dialect.MySQLDialect\n'
 
         _, stdout, _ = ssh.exec_command('echo "%s" | sudo tee %s' % (cfg, path))
@@ -63,7 +61,6 @@ class DeploySoftware:
             self.props.logger.log("Deploying showcase on " + ip_address)
             self.props.logger.log("This may take a while. Please wait ...")
             time.sleep(60)
-            paramiko.util.log_to_file('paramiko.log')
 
             ssh = self.ssh_to_instance(ip_address)
 
@@ -109,20 +106,6 @@ class DeploySoftware:
                     if len(rl) > 0:
                     # Print data from stdout
                         self.props.logger.log(msg=stdout.channel.recv(1024), level=logging.DEBUG)
-
-
-    def check(self, ip_address):
-        r = requests.get('http://%s/showcase-1-a' % ip_address)
-        return r.status_code == 200
-
-    def parse_config_file(self, config_file):
-        f = open(config_file, 'r')
-        ip_addresses = []
-        for line in f.readlines():
-            ip_addresses.append(line)
-        return ip_addresses
-
-
 
 if __name__ == '__main__':
     check_args(2, "<output_dir> <config_path>")

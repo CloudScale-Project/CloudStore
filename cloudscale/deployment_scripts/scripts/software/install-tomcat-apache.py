@@ -3,7 +3,6 @@ import time
 import paramiko
 import ConfigParser
 import sys, os
-from common.Cloudscale import *
 
 class InstallTomcatApache:
 

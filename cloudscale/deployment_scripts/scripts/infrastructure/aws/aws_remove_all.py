@@ -9,21 +9,38 @@ from boto.exception import BotoServerError
 from boto.ec2.cloudwatch import MetricAlarm
 import time
 import sys
+from cloudscale.deployment_scripts.config import Setup
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class RemoveAll:
+class RemoveAll(Setup):
     def __init__(self, cfg, logger):
-        self.cfg = cfg
-        self.logger = logger
-        self.key_name = self.cfg.get('EC2', 'key_name')
-        self.key_pair = self.cfg.get('EC2', 'key_pair')
-        self.conn_ec2 = boto.ec2.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-        self.conn_as = boto.ec2.autoscale.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
+        Setup.__init__(self, cfg, logger)
+
+        self.conn_ec2 = boto.ec2.connect_to_region(self.region,
+                                               aws_access_key_id=self.access_key,
+                                               aws_secret_access_key=self.secret_key)
+
+        self.conn_as = boto.ec2.autoscale.connect_to_region(self.region,
+                                               aws_access_key_id=self.access_key,
+                                               aws_secret_access_key=self.secret_key
+        )
+
+        self.conn_cloudwatch = boto.ec2.cloudwatch.connect_to_region(self.region,
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key
+        )
+
+        self.conn_rds = boto.rds.connect_to_region(self.region,
+                                               aws_access_key_id=self.access_key,
+                                               aws_secret_access_key=self.secret_key
+        )
+
+        conn_elb = boto.ec2.elb.connect_to_region(self.region,
+                                               aws_access_key_id=self.access_key,
+                                               aws_secret_access_key=self.secret_key)
+
+
         self.remove_cloudwatch_alarms()
 
         self.remove_load_balancer()
@@ -38,12 +55,8 @@ class RemoveAll:
 
     def remove_rds_instances(self):
         self.logger.log("Removing RDS instances ..")
-        conn = boto.rds.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-
         try:
-            conn.delete_dbinstance(id='cloudscale-master', skip_final_snapshot=True)
+            self.conn_rds.delete_dbinstance(id='cloudscale-master', skip_final_snapshot=True)
         except BotoServerError as e:
             import traceback
             self.logger.log(traceback.format_exc())
@@ -52,7 +65,7 @@ class RemoveAll:
         num = self.cfg.get('RDS', 'num_replicas')
         for i in xrange(int(num)):
             try:
-                conn.delete_dbinstance(id='cloudscale-replica%s' % str(i+1), skip_final_snapshot=True)
+                self.conn_rds.delete_dbinstance(id='cloudscale-replica%s' % str(i+1), skip_final_snapshot=True)
             except BotoServerError as e:
                 import traceback
                 self.logger.log(traceback.format_exc())
@@ -106,10 +119,7 @@ class RemoveAll:
 
     def remove_cloudwatch_alarms(self):
         self.logger.log("Removing cloudwatch alarms ...")
-        conn_cw = boto.ec2.cloudwatch.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-        conn_cw.delete_alarms(['scale_up_on_cpu', 'scale_down_on_cpu'])
+        self.conn_cloudwatch.delete_alarms(['scale_up_on_cpu', 'scale_down_on_cpu'])
 
     def remove_security_groups(self):
         self.logger.log("Removing security groups ...")
@@ -118,10 +128,7 @@ class RemoveAll:
 
     def remove_load_balancer(self):
         self.logger.log("Removing load balancer ...")
-        conn_elb = boto.ec2.elb.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-        conn_elb.delete_load_balancer('cloudscale-lb')
+        self.conn_elb.delete_load_balancer('cloudscale-lb')
 
     def remove_ami(self):
         self.logger.log("Removing ami ...")
@@ -129,117 +136,6 @@ class RemoveAll:
             self.conn_ec2.deregister_image(self.cfg.get('infrastructure', 'ami_id'))
         except:
             pass
-
-    def create_cloudwatch_alarms(self, scale_up_policy_arn, scale_down_policy_arn):
-        self.logger.log("Creating CloudWatch alarms")
-
-        conn = boto.ec2.cloudwatch.connect_to_region(self.cfg.get('EC2', 'region'),
-                                                     aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                                     aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-        alarm_dimensions = {'AutoScalingGroupName' : 'cloudscale-as'}
-
-        scale_up_alarm = MetricAlarm(
-            name='scale_up_on_cpu', namespace='AWS/EC2',
-            metric='CPUUtilization', statistic='Average',
-            comparison='>', threshold='70',
-            period='60', evaluation_periods=2,
-            alarm_actions=[scale_up_policy_arn],
-            dimensions=alarm_dimensions)
-
-        scale_down_alarm = MetricAlarm(
-            name='scale_down_on_cpu', namespace='AWS/EC2',
-            metric='CPUUtilization', statistic='Average',
-            comparison='<', threshold='40',
-            period='60', evaluation_periods=2,
-            alarm_actions=[scale_down_policy_arn],
-            dimensions=alarm_dimensions)
-
-        conn.create_alarm(scale_up_alarm)
-        conn.create_alarm(scale_down_alarm)
-
-    def create_scaling_policy(self):
-        self.logger.log("Creating scaling policy ...")
-        scale_up_policy = ScalingPolicy(name='scale_up',
-                                        adjustment_type='ChangeInCapacity',
-                                        as_name='cloudscale-as',
-                                        scaling_adjustment=2,
-                                        cooldown=180
-                        )
-        scale_down_policy = ScalingPolicy(name='scale_down',
-                                          adjustment_type='ChangeInCapacity',
-                                          as_name='cloudscale-as',
-                                          scaling_adjustment=-2,
-                                          cooldown=180)
-        self.conn.create_scaling_policy(scale_up_policy)
-        self.conn.create_scaling_policy(scale_down_policy)
-        scale_up_policy = self.conn.get_all_policies(
-            as_group='cloudscale-as', policy_names=['scale_up'])[0]
-        scale_down_policy = self.conn.get_all_policies(
-            as_group='cloudscale-as', policy_names=['scale_down'])[0]
-
-        return scale_up_policy.policy_arn, scale_down_policy.policy_arn
-
-    def create_launch_configuration(self):
-        self.logger.log("Creating launch configuration ...")
-
-        try:
-            lc = LaunchConfiguration(self.conn,
-                                 "cloudscale-lc",
-                                 self.cfg.get('infrastructure', 'ami_id'),
-                                 self.key_name,
-                                 ['http'],
-                                 None,
-                                 self.cfg.get('EC2', 'instance_type'))
-
-            self.conn.create_launch_configuration(lc)
-            return lc
-        except boto.exception.BotoServerError as e:
-            if e.error_code == 'AlreadyExists':
-                return self.conn.get_all_launch_configurations(names=['cloudscale-lc'])
-            else:
-                raise
-
-    def create_autoscalability_group(self, lb_name, lc):
-        self.logger.log("Creating autoscalability group ...")
-
-        try:
-            ag = AutoScalingGroup(group_name='cloudscale-as',
-                              load_balancers=[lb_name],
-                              availability_zones=self.cfg.get('EC2', 'availability_zones').split(","),
-                              launch_config=lc, min_size=2, max_size=8, connection=self.conn)
-            self.conn.create_auto_scaling_group(ag)
-        except boto.exception.BotoServerError as e:
-            if e.error_code != 'AlreadyExists':
-                raise # self.conn.get_all_groups(names=['cloudscale-as'])[0]
-
-
-    def create_security_group(self, name, description, cidr, port):
-        try:
-            conn = boto.ec2.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-            conn.create_security_group(name, description)
-            conn.authorize_security_group(group_name=name, ip_protocol='tcp', from_port=port, to_port=port, cidr_ip=cidr)
-
-            conn.create_dbsecurity_group(name, description)
-            conn.authorize_dbsecurity_group(name, cidr, name)
-        except boto.exception.EC2ResponseError as e:
-            if str(e.error_code) != 'InvalidGroup.Duplicate':
-                raise
-
-    def create_load_balancer(self):
-        self.logger.log("Creating load balancer ...")
-        conn = boto.ec2.elb.connect_to_region(self.cfg.get('EC2', 'region'),
-                                               aws_access_key_id=self.cfg.get('EC2', 'aws_access_key_id'),
-                                               aws_secret_access_key=self.cfg.get('EC2', 'aws_secret_access_key'))
-
-        zones = self.cfg.get('EC2', 'availability_zones').split(",")
-        ports = [(80, 80, 'http')]
-
-        lb = conn.create_load_balancer('cloudscale-lb', zones, ports)
-
-        return lb.name
-
 
 if __name__ == "__main__":
     check_args(2, "<output_dir> <config_path>")
