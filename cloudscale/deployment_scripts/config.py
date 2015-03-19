@@ -1,6 +1,7 @@
+import novaclient
 from cloudscale.deployment_scripts.scripts import read_config, create_user_path
 
-class Setup:
+class AWSConfig:
 
     def __init__(self, config, logger):
         self.logger = logger
@@ -34,6 +35,60 @@ class Setup:
         self.rds_num_replicas       = int(self.cfg.get('RDS', 'num_replicas'))
         self.rds_master_identifier  = self.cfg.get('RDS', 'master_identifier')
         self.rds_replica_identifier = self.cfg.get('RDS', 'replica_identifier')
+
+class OpenstackConfig:
+    def __init__(self, config, logger):
+        self.logger = logger
+        self.config = config
+        self.cfg = config.cfg
+
+        self.read_config()
+
+        self.nc = novaclient.Client(self.user, self.pwd, self.tenant, auth_url=self.url)
+
+    def read_config(self):
+        self.user                       = self.cfg.get('OPENSTACK', 'username')
+        self.pwd                        = self.cfg.get('OPENSTACK', 'password')
+        self.url                        = self.cfg.get('OPENSTACK', 'auth_url')
+        self.tenant                     = self.cfg.get('OPENSTACK', 'tenant_name')
+        self.image_name                 = self.cfg.get('APPLICATION', 'image_name')
+        self.remote_user                = self.cfg.get('APPLICATION', 'image_username')
+
+        self.instance_type              = self.cfg.get('APPLICATION', 'instance_type')
+
+        self.num_instances              = self.cfg.get('APPLICATION', 'num_instances')
+        self.key_name                   = self.cfg.get('OPENSTACK', 'key_name')
+        self.key_pair                   = self.cfg.get('OPENSTACK', 'key_pair')
+
+        self.database_type              = self.cfg.get('DATABASE', 'database_type').lower()
+        self.database_instance_type     = self.cfg.get('DATABASE', 'instance_type')
+        self.database_num_replicas      = self.cfg.get('DATABASE', 'num_replicas')
+        self.database_name              = self.cfg.get('DATABASE', 'database_name')
+        self.database_user              = self.cfg.get('DATABASE', 'database_user')
+        self.database_pass              = self.cfg.get('DATABASE', 'database_pass')
+        self.connection_pool_size       = self.cfg.get('DATABASE', 'connection_pool_size')
+        self.mongo_image_name           = self.cfg.get('MONGODB', 'image_name')
+        self.mysql_setup_type           = self.cfg.get('MYSQL', 'setup_type')
+        self.mysql_image_name           = self.cfg.get('MYSQL', 'image_name')
+        self.showcase_url               = self.get_showcase_url()
+        self.dump_url                   = self.get_dump_url()
+
+
+    def get_dump_url(self):
+        if self.database_type == 'mysql':
+            return self.cfg.get('MYSQL', 'dump_url')
+        elif self.database_type == 'mongodb' or self.database_type == 'mongo':
+            return self.cfg.get('MONGODB', 'dump_url')
+        else:
+            raise Exception("Wrong database type!")
+
+    def get_showcase_url(self):
+        if self.database_type == 'mysql':
+            return self.cfg.get('MYSQL', 'showcase_url')
+        elif self.database_type == 'mongodb' or self.database_type == 'mongo':
+            return self.cfg.get('MONGODB', 'showcase_url')
+        else:
+            raise Exception("Wrong database type!")
 
 
 class Config:

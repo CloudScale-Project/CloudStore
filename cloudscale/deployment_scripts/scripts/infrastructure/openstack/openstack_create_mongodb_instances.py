@@ -2,46 +2,19 @@ import os
 from novaclient.v2 import client as novaclient
 import time
 import paramiko
+from cloudscale.deployment_scripts.config import OpenstackConfig
 
-class ConfigureMongodb:
+
+class ConfigureMongodb(OpenstackConfig):
 
     def __init__(self, config, logger):
-        self.cfg = config.cfg
-        self.config = config
-        self.logger = logger
-
-        self.user = self.cfg.get('OPENSTACK', 'username')
-        self.pwd = self.cfg.get('OPENSTACK', 'password')
-        self.url = self.cfg.get('OPENSTACK', 'auth_url')
-        self.tenant = self.cfg.get('OPENSTACK', 'tenant_name')
-
-        self.image_name = self.cfg.get('OPENSTACK', 'image_name')
-
-        self.instance_type = self.cfg.get('MONGODB', 'instance_type')
+        OpenstackConfig.__init__(self, config, logger)
         self.instance_name = 'cloudscale-db-mongo'
-        self.num_replicas = self.cfg.get('MONGODB', 'num_replicas')
-
-        self.key_name = self.cfg.get('OPENSTACK', 'key_name')
-        self.key_pair = self.cfg.get('OPENSTACK', 'key_pair')
-
-        self.mongodb_image_name = "cloudscale-db-mongo-image"
-
-        self.database_name = self.cfg.get('MONGODB', 'database_name')
-        self.database_user = self.cfg.get('MONGODB', 'database_user')
-        self.database_pass = self.cfg.get('MONGODB', 'database_pass')
-
-        self.generate_dump_path =  self.cfg.get('MONGODB', 'generate_dump_path')
-
-        self.database_type = self.cfg.get('OPENSTACK', 'database_type').lower()
-
-        self.remote_user = self.cfg.get('OPENSTACK', 'image_username')
-
-        self.nc = novaclient.Client(self.user, self.pwd, self.tenant, auth_url=self.url)
 
         self.logger.log("Creating database instances:")
         images = self.nc.images.list()
         for image in images:
-            if image.name == self.mongodb_image_name:
+            if image.name == self.mongo_image_name:
                 self.logger.log('Image already exists.')
                 break
         else:
@@ -51,9 +24,9 @@ class ConfigureMongodb:
 USERNAME=%s
 """ % self.remote_user + open(self.file_path + '/install-mongodb.sh', 'r').read()
 
-            server_id = self.create_instance(userdata=userdata)
+            server_id = self.create_instance(image_name=self.mongo_image_name, userdata=userdata)
             self.wait_powered_off(server_id)
-            self.create_image(server_id, self.mongodb_image_name)
+            self.create_image(server_id, self.mongo_image_name)
             self.delete_instance(server_id)
 
             self.logger.log("Done creating database image")
@@ -69,16 +42,13 @@ USERNAME=%s
         server = self.nc.servers.get(server_id)
         server.delete()
 
-    def create_instance(self, image_name=None, userdata=None, wait_on_active_status=True):
-        if image_name is None:
-            image_name = self.image_name
-
+    def create_instance(self, image_name, userdata=None, wait_on_active_status=True):
         for f in self.nc.flavors.list():
-            if f.name == self.instance_type:
+            if f.name == self.database_instance_type:
                 flavor = f
                 break
         else:
-            self.logger.log("Instance flavor '%s' not found!" % self.instance_type)
+            self.logger.log("Instance flavor '%s' not found!" % self.database_instance_type)
             return False
 
         for img in self.nc.images.list():
@@ -89,7 +59,7 @@ USERNAME=%s
             self.logger.log("Image '%s' not found!" % image_name)
             return False
 
-        server_id = self.nc.servers.create(self.instance_name, image, flavor, key_name=self.key_name, userdata=userdata).id
+        server_id = self.nc.servers.create(self.database_instance_type, image, flavor, key_name=self.key_name, userdata=userdata).id
 
         if wait_on_active_status and not self.wait_active(server_id):
             return False
@@ -160,10 +130,10 @@ USERNAME=%s
     def create_database_instances(self):
         database_server_ids = []
 
-        for i in range(int(self.num_replicas)):
+        for i in range(int(self.database_num_replicas)):
             self.logger.log("Creating database instance %s ..." % (i + 1))
             database_server_ids.append(
-                self.create_instance(image_name=self.mongodb_image_name, wait_on_active_status=False)
+                self.create_instance(image_name=self.mongo_image_name, wait_on_active_status=False)
             )
 
         self.wait_all_instances_active(database_server_ids)
@@ -182,7 +152,8 @@ USERNAME=%s
 
         scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
         self.logger.log("Uploading mysql dump")
-        scp.put(self.generate_dump_path, 'dump.sql')
+        cmd = "wget -T90 -q %s -O dump.sql" % self.dump_url
+        ssh.exec_command(cmd)
 
         ssh.exec_command("sudo mv dump.sql /root/dump.sql")
 
@@ -264,7 +235,8 @@ sudo mongod --configsvr --dbpath /data/configdb --port 27019 --syslog --fork""")
 
         scp = paramiko.SFTPClient.from_transport(ssh.get_transport())
         self.logger.log("Uploading mongo dump")
-        scp.put(self.generate_dump_path, 'dump.tar.gz')
+        cmd = "wget -T90 -q %s -O dump.tar.gz" % self.dump_url
+        self.ssh_execute_command(ssh, cmd)
 
         self.logger.log("Extracting mongo dump")
         self.ssh_execute_command(ssh, "mkdir dump; tar xf dump.tar.gz -C dump")

@@ -2,14 +2,14 @@ from boto import ec2
 import os
 from boto.exception import EC2ResponseError
 import sys
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class CreateKeyPair(Setup):
+class CreateKeyPair(AWSConfig):
 
     def __init__(self, user_path, config, logger):
-        Setup.__init__(self, config, logger)
+        AWSConfig.__init__(self, config, logger)
         self.user_path = user_path
 
     def create(self):

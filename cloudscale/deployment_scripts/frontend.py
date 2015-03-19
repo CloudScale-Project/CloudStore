@@ -1,6 +1,6 @@
 import os
 import time
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts.infrastructure.aws import aws_create_keypair
 from cloudscale.deployment_scripts.scripts.infrastructure.aws import aws_create_instance
 from cloudscale.deployment_scripts.scripts.infrastructure.aws import aws_create_loadbalancer
@@ -12,10 +12,10 @@ from cloudscale.deployment_scripts.scripts.infrastructure.openstack import opens
 
 
 
-class Frontend(Setup):
+class Frontend(AWSConfig):
 
     def __init__(self, config, logger):
-        Setup.__init__(self, config, logger)
+        AWSConfig.__init__(self, config, logger)
         self.instance_ids = []
         self.ip_addresses = []
 

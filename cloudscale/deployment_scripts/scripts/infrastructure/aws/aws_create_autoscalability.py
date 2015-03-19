@@ -7,14 +7,14 @@ import boto.ec2.cloudwatch
 from boto.ec2.cloudwatch import MetricAlarm
 import sys
 from boto.ec2.autoscale.tag import Tag
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class Autoscalability(Setup):
+class Autoscalability(AWSConfig):
 
     def __init__(self, config, logger):
-        Setup.__init__(self, config, logger)
+        AWSConfig.__init__(self, config, logger)
         self.as_ami_id = self.cfg.get('infrastructure', 'ami_id')
 
     def create(self):

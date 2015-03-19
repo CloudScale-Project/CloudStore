@@ -5,14 +5,14 @@ import time
 import paramiko
 
 import sys, os
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class CreateEC2Instance(Setup):
+class CreateEC2Instance(AWSConfig):
 
     def __init__(self, config, logger):
-        Setup.__init__(self, config, logger)
+        AWSConfig.__init__(self, config, logger)
 
         self.conn = boto.ec2.connect_to_region(
             self.region,

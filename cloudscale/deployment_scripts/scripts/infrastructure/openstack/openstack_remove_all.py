@@ -4,28 +4,13 @@ import time
 
 from novaclient.v2 import client as novaclient
 import sys
+from cloudscale.deployment_scripts.config import OpenstackConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class RemoveAll:
+class RemoveAll(OpenstackConfig):
     def __init__(self, config, logger):
-        self.cfg = config.cfg
-        self.config = config
-        self.logger = logger
-
-        self.user = self.cfg.get('OPENSTACK', 'username')
-        self.pwd = self.cfg.get('OPENSTACK', 'password')
-        self.url = self.cfg.get('OPENSTACK', 'auth_url')
-        self.tenant = self.cfg.get('OPENSTACK', 'tenant_name')
-
-        self.image_name = self.cfg.get('OPENSTACK', 'image_name')
-        self.instance_type = self.cfg.get('OPENSTACK', 'instance_type')
-        self.instance_name = 'cloudscale'
-        self.key_name = self.cfg.get('OPENSTACK', 'key_name')
-        self.key_pair = self.cfg.get('OPENSTACK', 'key_pair')
-
-        self.nc = novaclient.Client(self.user, self.pwd, self.tenant, auth_url=self.url)
-
+        OpenstackConfig.__init__(self, config, logger)
         self.logger.log("Cleaning:")
         self.remove_openstack_instances()
         # TODO: remove images

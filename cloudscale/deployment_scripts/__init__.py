@@ -9,7 +9,7 @@ from cloudscale.deployment_scripts.scripts.infrastructure.openstack import opens
 def deploy(infrastructure, config_path, results_dir, logger):
     config = Config(infrastructure, results_dir, config_path)
     _setup_backend(config, logger)
-    _setup_frontend(config, logger)
+    return _setup_frontend(config, logger)
 
 def _setup_backend(config, logger):
     backend = Backend(config, logger)
@@ -33,4 +33,5 @@ def _setup_frontend(config, logger):
     elif config.provider == 'openstack':
         showcase_url = frontend.setup_openstack_frontend()
 
-    logger.log('You can view your showcase on <a href="http://%s/showcase-1-a">http://%s/showcase-1-a</a>' % (showcase_url, showcase_url), fin=True)
+    return showcase_url
+

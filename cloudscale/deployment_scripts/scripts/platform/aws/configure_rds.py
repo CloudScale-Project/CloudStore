@@ -6,14 +6,14 @@ import time
 import subprocess
 import os
 import sys
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class ConfigureRDS(Setup):
+class ConfigureRDS(AWSConfig):
 
     def __init__(self, config, logger):
-        Setup.__init__(self, config, logger)
+        AWSConfig.__init__(self, config, logger)
 
         self.conn = boto.rds.connect_to_region(self.region,
                                                aws_access_key_id=self.access_key,

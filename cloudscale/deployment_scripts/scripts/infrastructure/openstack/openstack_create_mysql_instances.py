@@ -4,58 +4,27 @@ import time
 import paramiko
 import select
 import sys
+from cloudscale.deployment_scripts.config import OpenstackConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class ConfigureMySQL:
+class ConfigureMySQL(OpenstackConfig):
 
     def __init__(self, config, logger):
-        self.cfg = config.cfg
-        self.config = config
-        self.logger = logger
-
-        self.user = self.cfg.get('OPENSTACK', 'username')
-        self.pwd = self.cfg.get('OPENSTACK', 'password')
-        self.url = self.cfg.get('OPENSTACK', 'auth_url')
-        self.tenant = self.cfg.get('OPENSTACK', 'tenant_name')
-
-
-
-        self.instance_type = self.cfg.get('MYSQL', 'instance_type')
-        self.instance_name = 'cloudscale-db'
+        OpenstackConfig.__init__(config, logger)
         self.master_instance_name = 'cloudscale-db-master'
-        self.num_replicas = self.cfg.get('MYSQL', 'num_replicas')
-
-        self.key_name = self.cfg.get('OPENSTACK', 'key_name')
-        self.key_pair = self.cfg.get('OPENSTACK', 'key_pair')
 
         self.galera_image_name = "cloudscale-db-image"
-
-        self.database_name = self.cfg.get('MYSQL', 'database_name')
-        self.database_user = self.cfg.get('MYSQL', 'database_user')
-        self.database_pass = self.cfg.get('MYSQL', 'database_pass')
-
-        self.generate_dump_path = self.cfg.get('MYSQL', 'generate_dump_path')
-
-        self.database_type = self.cfg.get('OPENSTACK', 'database_type').lower()
-
-
-
-        self.nc = novaclient.Client(self.user, self.pwd, self.tenant, auth_url=self.url)
-
-
 
         self.logger.log("Creating database instances:")
         self.file_path = os.path.dirname(__file__) + "/../../software"
 
-        if self.config.db.get('setup_type') == 'master-slave':
-            self.image_name = self.cfg.get('MYSQL', 'image_name')
-            self.remote_user = self.cfg.get('MYSQL', 'image_username')
+        if self.mysql_setup_type == 'master-slave':
             self.create_master_slave()
-        elif self.config.db.get('setup_type') == 'master-master':
-            self.image_name = self.cfg.get('OPENSTACK', 'image_name')
-            self.remote_user = self.cfg.get('OPENSTACK', 'image_username')
+        elif self.mysql_setup_type == 'master-master':
             self.create_master_master()
+        else:
+            raise Exception("Wrong MYSQL setup type!")
 
 
     def create_master_master(self):
@@ -95,7 +64,7 @@ echo '
 
     def create_master_slave(self):
         master_ip, master_private_ip = self.create_master()
-        slaves = self.create_slave(master_private_ip, int(self.num_replicas)-1)
+        slaves = self.create_slave(master_private_ip, int(self.database_num_replicas)-1)
         self.upload_mysql_dump(master_ip)
         ssh = self.ssh_to_instance(master_ip)
         _ ,stdout, _ = ssh.exec_command("mysql -u root -ppassword -D tpcw < ~/dump.sql")

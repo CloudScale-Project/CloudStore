@@ -4,63 +4,30 @@ from novaclient.v2 import client as novaclient
 import time
 import paramiko
 import select
+from cloudscale.deployment_scripts.config import OpenstackConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 from cloudscale.deployment_scripts.scripts.software import deploy_showcase
 
 
-class CreateInstance:
+class CreateInstance(OpenstackConfig):
 
     def __init__(self, config, logger):
+        OpenstackConfig.__init__(self, config, logger)
         self.mvn_path = '/usr/bin/mvn'
-        self.cfg = config.cfg
-        self.config = config
-        self.logger = logger
-
         self.file_path = "/".join(os.path.abspath(__file__).split('/')[:-1])
-        self.remote_user = self.cfg.get('OPENSTACK', 'remote_user')
-        self.key_pair = self.cfg.get('OPENSTACK', 'key_pair')
+
         self.remote_deploy_path = self.cfg.get('software', 'remote_deploy_path')
 
-        self.user = self.cfg.get('OPENSTACK', 'username')
-        self.pwd = self.cfg.get('OPENSTACK', 'password')
-        self.url = self.cfg.get('OPENSTACK', 'auth_url')
-        self.tenant = self.cfg.get('OPENSTACK', 'tenant_name')
-        self.db_num_instances = self.cfg.get('MYSQL', 'num_replicas')
-
-        self.image_name = self.cfg.get('OPENSTACK', 'image_name')
-
-        self.instance_type = self.cfg.get('OPENSTACK', 'instance_type')
         self.instance_name = 'cloudscale-sc'
-
-        self.key_name = self.cfg.get('OPENSTACK', 'key_name')
-        self.key_pair = self.cfg.get('OPENSTACK', 'key_pair')
 
         self.showcase_image_name = "cloudscale-sc-image"
 
-        self.database_name = self.cfg.get('MYSQL', 'database_name')
-        self.database_user = self.cfg.get('MYSQL', 'database_user')
-        self.database_pass = self.cfg.get('MYSQL', 'database_pass')
-
-        self.connection_pool_size = self.cfg.get('MYSQL', 'connection_pool_size')
-
-        self.database_type = self.cfg.get('OPENSTACK', 'database_type').lower()
-        self.showcase_location = self.cfg.get('MYSQL', 'showcase_war_url')
+        self.showcase_location = self.showcase_url
         self.deploy_name = "showcase-1-a"
         if self.database_type != 'mysql':
             self.deploy_name="showcase-1-b"
-            self.showcase_location = self.cfg.get('MONGODB', 'showcase_war_url')
             self.showcase_image_name = "cloudscale-sc-mongo-image"
 
-            self.database_name = self.cfg.get('MONGODB', 'database_name')
-            self.database_user = self.cfg.get('MONGODB', 'database_user')
-            self.database_pass = self.cfg.get('MONGODB', 'database_pass')
-
-
-        self.remote_user = self.cfg.get('OPENSTACK', 'image_username')
-
-        self.num_instances = self.config.fr.get('num_instances')
-
-        self.nc = novaclient.Client(self.user, self.pwd, self.tenant, auth_url=self.url)
         self.delete_image(self.showcase_image_name)
         self.logger.log("Creating showcase instance image:")
         images = self.nc.images.list()

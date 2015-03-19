@@ -9,13 +9,13 @@ from boto.exception import BotoServerError
 from boto.ec2.cloudwatch import MetricAlarm
 import time
 import sys
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class RemoveAll(Setup):
+class RemoveAll(AWSConfig):
     def __init__(self, cfg, logger):
-        Setup.__init__(self, cfg, logger)
+        AWSConfig.__init__(self, cfg, logger)
 
         self.conn_ec2 = boto.ec2.connect_to_region(self.region,
                                                aws_access_key_id=self.access_key,

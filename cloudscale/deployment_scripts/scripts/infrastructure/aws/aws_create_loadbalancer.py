@@ -2,14 +2,14 @@ from boto import ec2
 from boto.exception import BotoServerError
 import sys
 import time
-from cloudscale.deployment_scripts.config import Setup
+from cloudscale.deployment_scripts.config import AWSConfig
 from cloudscale.deployment_scripts.scripts import check_args, get_cfg_logger
 
 
-class CreateLoadbalancer(Setup):
+class CreateLoadbalancer(AWSConfig):
 
     def __init__(self, config, logger):
-        Setup.__init__(self, config, logger)
+        AWSConfig.__init__(self, config, logger)
 
     def create(self, instances):
         self.instances = instances
@@ -36,7 +36,6 @@ class CreateLoadbalancer(Setup):
                 lb = []
             i+=1
 
-        time.sleep(10)
         lb = conn.create_load_balancer(lb_name, zones, ports)
 
         self.attach_instances(lb)
