@@ -1,43 +1,39 @@
-==================
-Distributed JMeter
-==================
+=============================
+CloudScale deployment scripts
+=============================
 
-Distributed JMeter provides such and such and so and so. You might find
-it most useful for tasks involving <x> and also <y>. Typical usage
-often looks like this::
+CloudScale deployment scripts are Python scripts for deploying showcase for CloudScale project on Amazon Web Services
+and Openstack. The showcase is a book store written in Java Spring Framework according to TPC-W standard. Scripts are
+configurable so you ca also use them for deploying your application to Amazon Web Services or Openstack.
 
-    #!/usr/bin/env python
+About CloudScale project
+========================
+The goal of CloudScale is to aid service providers in analysing, predicting and resolving scalability issues,
+i.e., support scalable service engineering. The project extends existing and develops new solutions that support
+the handling of scalability problems of software-based services.
 
-    from towelstuff import location
-    from towelstuff import utils
+You can read more about CloudScale project on: http://www.cloudscale-project.eu
 
-    if utils.has_towel():
-        print "Your towel is located:", location.where_is_my_towel()
+Installation
+=============
+To install scripts download zip or checkout repository and then run:
 
-(Note the double-colon and 4-space indent formatting above.)
+```
+$ python setup.py install
+```
 
-Paragraphs are separated by blank lines. *Italics*, **bold**,
-and ``monospace`` look like this.
+This will install CloudScale deployment scripts to your ```site-packages``` folder of your Python distribution.
 
+If you want to install it with ```pip``` you can do this by running the following command:
 
-A Section
-=========
+```
+$ pip install -e https://github.com/CloudScale-project/Showcase/deployment-scripts/zipball/deployment-scripts
+```
 
-Lists look like this:
+Usage
+======
 
-* First
-
-* Second. Can be multiple lines
-but must be indented properly.
-
-A Sub-Section
--------------
-
-Numbered lists look like you'd expect:
-
-1. hi there
-
-2. must be going
-
-Urls are http://like.this and links can be
-written `like this <http://www.example.com/foo/bar>`_.
+You can run scripts as standalone or use them as part of your application. The example of using scripts as part of your
+application is in ```bin/``` directory. You can also use the script ```bin/run.py``` for start, just edit
+```bin/config.aws.ini``` file if you want to deploy on AWS, or ```bin/config.openstack.mysql.ini``` for deploying MySQL
+version on Openstack or ```bin/config.openstack.mongo.ini``` for deploying MongoDB version on Openstack.
