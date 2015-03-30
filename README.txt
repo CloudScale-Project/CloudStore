@@ -32,8 +32,15 @@ $ pip install -e https://github.com/CloudScale-project/Showcase/deployment-scrip
 
 Usage
 ======
+You can run scripts in ```cloudscale/deployment_scripts/scripts/``` as standalone or use them as part of your application. The example of using scripts as part of your
+application is in ```bin/run.py``` file.
 
-You can run scripts as standalone or use them as part of your application. The example of using scripts as part of your
-application is in ```bin/``` directory. You can also use the script ```bin/run.py``` for start, just edit
-```bin/config.aws.ini``` file if you want to deploy on AWS, or ```bin/config.openstack.mysql.ini``` for deploying MySQL
-version on Openstack or ```bin/config.openstack.mongo.ini``` for deploying MongoDB version on Openstack.
+Amazon Web Services
+-------------------
+To deploy showcase on Amazon Web Services edit ```bin/config.aws.ini``` file.
+
+Openstack
+---------
+To deploy MySQL version of showcase on OpenStack edit ```bin/config.openstack.mysql.ini```.
+
+To deploy MongoDB version of showcase on OpenStack edit ```bin/config.openstack.mongo.ini```.
