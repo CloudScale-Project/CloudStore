@@ -16,6 +16,7 @@ class Frontend(AWSConfig):
 
     def __init__(self, config, logger):
         AWSConfig.__init__(self, config, logger)
+
         self.instance_ids = []
         self.ip_addresses = []
 
@@ -25,8 +26,6 @@ class Frontend(AWSConfig):
         self.deploy_name = "showcase-1-a"
 
     def setup_aws_frontend(self):
-        self.cfg = self.config.cfg
-        self.config = self.config
 
         i = aws_create_keypair.CreateKeyPair(
             config=self.config,

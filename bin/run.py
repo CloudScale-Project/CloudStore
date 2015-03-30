@@ -15,7 +15,10 @@ if __name__ == "__main__":
         config_path = sys.argv[2]
         infrastructure = sys.argv[1]
         logger = MyLogger()
-        url = deploy(infrastructure, config_path, os.path.abspath(os.path.dirname(__file__)), logger)
-        print "Showcase is deployed on %s" % url
+        results_dir = "%s/results" % os.path.abspath(os.path.dirname(__file__))
+        url = deploy(infrastructure, config_path, results_dir, logger)
+        print "Showcase is deployed on http://%s/showcase-1-a\n" \
+              "\n" \
+              "NOTE: You can copy above url to our application for distributed jmeter" % url
     else:
         print """Usage: python run.py <aws|openstack> <path_to_config>"""

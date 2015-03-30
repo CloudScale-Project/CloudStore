@@ -9,3 +9,4 @@ dist/cloudscale-deployment-scripts-0.1.0
 build
 dist
 deployment_scripts.log
+results/
