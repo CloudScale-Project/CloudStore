@@ -4,7 +4,7 @@ CloudScale deployment scripts
 
 CloudScale deployment scripts are Python scripts for deploying showcase for CloudScale project on Amazon Web Services
 and Openstack. The showcase is a book store written in Java Spring Framework according to TPC-W standard. Scripts are
-configurable so you ca also use them for deploying your application to Amazon Web Services or Openstack.
+configurable so you can also use them for deploying your application to Amazon Web Services or Openstack.
 
 About CloudScale project
 ========================
@@ -37,10 +37,22 @@ application is in ```bin/run.py``` file.
 
 Amazon Web Services
 -------------------
-To deploy showcase on Amazon Web Services edit ```bin/config.aws.ini``` file.
+To deploy showcase on Amazon Web Services edit ```bin/config.aws.ini``` file and run:
+
+```
+$ python run.py aws config.aws.ini
+```
 
 Openstack
 ---------
-To deploy MySQL version of showcase on OpenStack edit ```bin/config.openstack.mysql.ini```.
+To deploy MySQL version of showcase on OpenStack edit ```bin/config.openstack.mysql.ini``` and run:
 
-To deploy MongoDB version of showcase on OpenStack edit ```bin/config.openstack.mongo.ini```.
+```
+$ python run.py openstack config.openstack.mysql.ini
+```
+
+To deploy MongoDB version of showcase on OpenStack edit ```bin/config.openstack.mongo.ini``` and run:
+
+```
+$ python run.py openstack config.openstack.mongo.ini
+```

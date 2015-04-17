@@ -1,5 +1,6 @@
 *.pyc
 .idea
+README_development
 bin/config.ini
 bin/rds-tpcw-dump-latest.sql
 bin/deployment_scripts.log
