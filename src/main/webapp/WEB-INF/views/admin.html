@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorator="/templates/layout">
+  <head>
+  	<title>Edit item</title>
+  </head>
+<body>
+<div layout:fragment="content">
+	<div th:if="${error}" class="alert alert-error">
+		<p th:text="${error}"></p>
+	</div>
+	<div th:unless="${error}">
+		<form th:action="@{/admin-confirm(I_ID= ${item.IId})}" th:object="${item}" method="post">
+			<div class="pull-left">
+				<div>
+					<strong>Title:</strong><span th:text="*{ITitle}"></span>
+				</div>
+				<div>
+					<strong>Author:</strong> <span th:text="*{author.AFname}"></span> <span th:text="*{author.ALname}"></span>
+				</div>
+				<div>
+					<strong>Suggested Retail:</strong> $<span th:text="*{ICost}"></span>
+				</div>
+				<div>
+					<strong>Our Current Price:</strong> $<span style="color: red;" th:text="*{ICost}"></span>
+				</div>
+				<div>
+					<strong>Enter new price:</strong> $<input type="text" name="new_price" />
+				</div>
+				<div>
+					<strong>Enter new picture:</strong> <input type="text" name="new_picture" />
+				</div>
+				<div>
+					<strong>Enter new thumbnail:</strong> <input type="text" name="new_thumbnail"/>
+				</div>
+			</div>
+			<div class="pull-left">
+				<img th:src="@{ ${imgResourceUrl} + '/' + *{IThumbnail}}" src="" width="100" height="100" />
+			</div>
+			<div class="clearfix"></div>
+			<input type="hidden" value="*{IId}" name="itemId"/>
+			<input type="submit" value="Submit Changes" class="btn btn-normal"/>
+		</form>
+	</div>
+</div>
+</body>
+</html>
