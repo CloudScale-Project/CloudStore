@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="responseGeneratorApp">
+<head lang="en" >
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="{{ app_path }}/static/css/jsxgraph.css" />
+    <link rel="stylesheet" type="text/css" href="{{ app_path }}/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ app_path }}/static/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ app_path }}/static/css/mycss.css" />
+    <link href="{{ app_path }}/static/css/gh-fork-ribbon.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <link href="{{ app_path }}/static/css/gh-fork-ribbon.ie.css" rel="stylesheet">
+    <![endif]-->
+    <script type="text/javascript" src="{{ app_path }}/static/js/jsxgraph.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+    <script src="{{ app_path }}/static/js/jstat.min.js"></script>
+    <script src="{{ app_path }}/static/js/angular/main.js"></script>
+    <style>
+        .right-bottom .github-fork-ribbon,
+        .right .github-fork-ribbon{
+            background-color: #648CAF;
+        }
+    </style>
+</head>
+<body ng-controller="DistributionController">
+<div class="container">
+    <div class="col-md-12 text-center" style="margin-bottom:20px">
+        <div>
+            <div class="text-left pull-left" style="margin-top: 20px;">
+                <a href="http://www.cloudscale-project.eu"><img src="{{ app_path }}/static/images/logo-CloudScale.png" /></a>
+            </div>
+            <div class="pull-right" style="margin-top: 27px;">
+                <h2>Response generator</h2>
+            </div>
+            <div class="clearfix"></div>
+            <hr>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="col-md-6">
+        <jsxgraph></jsxgraph>
+        <small style="color: #aaaaaa">JSXGraph v0.99.2 Copyright (C) see http://jsxgraph.org</small>
+    </div>
+    <div class="col-md-6">
+        <form name="form" novalidate>
+        <div class="form-group">
+            <label>Distribution type:</label>
+            <select class="form-control" ng-model="curr" ng-options="d for d in dists" ng-change="change()">
+            </select>
+        </div>
+
+        <div id="form" >
+            <div class="form-group">
+                <label ng-show="curr == 'gauss' || curr == 'log'">&mu; (mu):</label>
+                <label ng-show="curr == 'expo'">&lambda; (lambda):</label>
+                <label ng-show="curr == 'gamma' || curr == 'pareto' || curr == 'weibull'">&alpha; (alpha):</label>
+                <label ng-show="curr == 'uniform'">a:</label>
+                <label ng-show="curr == 'constant'">c:</label>
+                <input class="form-control" id="attr1" type="text" ng-model="attr1" name="attr1" />
+            </div>
+            <div class="form-group">
+                <label ng-show="curr == 'gauss' || curr == 'log'">&sigma; (sigma):</label>
+                <label ng-show="curr == 'gamma' || curr == 'weibull'">&beta; (beta):</label>
+                <label ng-show="curr == 'uniform'">b:</label>
+                <input ng-show="curr == 'uniform' || curr == 'gauss' || curr == 'log' || curr == 'weibull' || curr == 'gamma'" class="form-control" id="attr2" type="text" ng-model="attr2" name="attr2" />
+            </div>
+            <div class="form-group" ng-show="curr != 'gauss' && curr != 'constant'">
+                <label>K (optional):</label>
+                <input class="form-control" id="attr3" type="text" ng-model="attr3" name="attr3" />
+            </div>
+        </div>
+        </form>
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group col-md-12 text-center" style="margin-top: 20px ">
+        <a ng-href="{{ app_path }}/{{ url|angular }}&test=false" class="btn btn-primary">Run</a>
+        <a ng-href="{{ app_path }}/{{ url|angular }}&test=true" class="btn btn-primary">Get value</a>
+    </div>
+
+    <div class="github-fork-ribbon-wrapper right">
+        <div class="github-fork-ribbon">
+            <a href="https://github.com/Cloudscale-project">Fork us on GitHub</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
