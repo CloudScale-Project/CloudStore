@@ -36,7 +36,7 @@ After building you get `.war` file in `target/` directory. You can upload this f
 
 The dump for MySQL database is available on the following url:
 
-[http://cloudscale.xlab.si/github/rds-tpcw-dump-latest.sq]
+http://cloudscale.xlab.si/github/rds-tpcw-dump-latest.sql
 
 #### Generate
 
