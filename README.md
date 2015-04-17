@@ -29,26 +29,16 @@ $ mvn -Pmongodb -Dconnection_pool_size=<number> install
 Notice the `-Dconnection_pool_size=<number>` compile parameter. Here you set the maximum size of connection pool for database.
 
 After building you get `.war` file in `target/` directory. You can upload this file on Tomcat or any other Java web container that is able to run `.war` files.
-
-### Generating images
-
-You can generate images by configuring and executing the file `generate_images.sh` with Perl:
-
-```bash
-$ perl generate_images.sh
-```
-
-**NOTICE** You need to add the execute permission to `ImgGen/ImgFiles/tpcwIMG`!
-
-This script will generate images in `main/webapp/resources/img/` directory. 
-
-Important configuration properties in `generate_images.sh` are:
-
- 1. `$NUM_ITEMS` - refers to the number of rows in `items` database table
- 2. `$DEST_DIR` - directory where to save images
- 3. `$GEN_DIR` - the location of generator script 
  
-### Generating database
+### Database
+
+#### Dump
+
+The dump for MySQL database is available on the following url:
+
+[http://cloudscale.xlab.si/github/rds-tpcw-dump-latest.sq]
+
+#### Generate
 
 To generate database you need to edit `src/main/resources/app-context.xml` file and replace row:
 
