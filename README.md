@@ -67,6 +67,20 @@ Settings in config files are separated into sections for easier understanding.
 ```key_pair_path``` - Path to SSH key.
 ```remote_user``` - Username to use for SSH on VM.
 
+## Installation
+
+Before you can use distributed JMeter scripts you need to install them. You can do this by downloading the ZIP archive and then run:
+
+```
+$ python setup.py install 
+```
+
+You can also install the scripts using ```pip``` tool:
+
+```
+$ pip install -e https://github.com/CloudScale-project/Showcase/distributed-jmeter/zipball/distributed-jmeter
+```
+
 ## Usage
 
 ### Amazon Web Services
