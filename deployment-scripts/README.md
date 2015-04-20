@@ -22,7 +22,7 @@ This will install CloudScale deployment scripts to your ```site-packages``` fold
 If you want to install it with ```pip``` you can do this by running the following command:
 
 ```
-$ pip install -e https://github.com/CloudScale-project/Showcase/deployment-scripts/zipball/deployment-scripts
+$ pip install -e 'git+https://github.com/CloudScale-Project/Showcase.git#egg=deployment-scripts&subdirectory=deployment-scripts'
 ```
 
 ## Usage
