@@ -1,0 +1,13 @@
+*.pyc
+.idea
+README_development
+bin/config.ini
+bin/rds-tpcw-dump-latest.sql
+bin/deployment_scripts.log
+bin/paramiko.log
+cloudscale_deployment_scripts.egg-info
+dist/cloudscale-deployment-scripts-0.1.0
+build
+dist
+deployment_scripts.log
+bin/results/
