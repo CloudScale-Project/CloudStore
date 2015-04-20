@@ -1,7 +1,11 @@
 *.pyc
+<<<<<<< HEAD
 .idea
 bin/config.ini
 bin/distributed_jmeter.log
 build
 cloudscale_distributed_jmeter.egg-info
 dist
+=======
+config.py
+>>>>>>> response-generator
