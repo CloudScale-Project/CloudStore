@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+    ServerName cloudscale-lb-1247224832.eu-west-1.elb.amazonaws.com
+
+    ProxyPreserveHost On
+    # showcase-1-a (MySQL)
+    ProxyPass /showcase-1-a http://localhost:8080/showcase-1-a
+    ProxyPassReverse /showcase-1-a http://localhost:8080/showcase-1-a
+
+    # showcase-1-b (noSQL)
+    ProxyPass /showcase-1-b http://localhost:8080/showcase-1-b
+    ProxyPassReverse /showcase-1-b http://localhost:8080/showcase-1-b
+
+    # showcase-0
+    ProxyPass /showcase-0 http://localhost:8080/showcase-0
+    ProxyPassReverse /showcase-0 http://localhost:8080/showcase-0
+</VirtualHost>
