@@ -56,4 +56,4 @@ Use ```test=false``` if you want to actually make a delay.
 
 ### Screenshots
 
-![Screenshot](https://raw.githubusercontent.com/CloudScale-Project/Showcase/response-generator/static/images/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/CloudScale-Project/Showcase/master/response-generator/static/images/screenshot.png)
