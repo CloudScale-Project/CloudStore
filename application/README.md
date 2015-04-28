@@ -61,4 +61,11 @@ with
 
 You'll also need to edit a configuration for choosen database `hibernate.xml` or `mongodb.xml` and set the actual number instead of variable placeholder `${connection_pool_size}`.
 
-Then you can run `src/main/java/eu/cloudscale/showcase/generate/Generate.java` from Eclipse
+Then you can run `src/main/java/eu/cloudscale/showcase/generate/Generate.java` from Eclipse.
+
+**NOTICE:** 
+If you are running generator from Eclipse you need to set the ```-Xmx4096m``` in the Run Configuration for generator under Arguments tab in VM arguments window.
+
+If you are running generator from console run it with ```-Xmx4096m``` option.
+
+
