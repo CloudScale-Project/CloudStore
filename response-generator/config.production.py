@@ -1,1 +1,0 @@
-APPLICATION_PATH = '/response-generator'
