@@ -50,5 +50,5 @@ $ mvn clean install
 from directory where the ```pom.xml``` file is located.
 
 ### Installing
-Copy ```target/showcase-1.0-SNAPSHOT.war``` to Tomcat.
+Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat.
 
