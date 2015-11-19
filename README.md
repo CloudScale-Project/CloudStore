@@ -1,8 +1,11 @@
 ## Introduction
 
-CloudStore is an e-commerce web application developed by using [TPC-W](http://www.tpc.org/tpcw/) standard and it is used as a Showcase application to validate the CloudScale tools that were developed during the project. The application was developed using the Java Springframework.
+CloudStore is an open-source e-commerce web application developed following the functional requirements defined by the [TPC-W](http://www.tpc.org/tpcw/) standard, and it's goal is to be used for the analysis of cloud characteristics of systems, such as capacity, scalability, elasticity and efficiency. It was developed as a Showcase application to validate the CloudScale tools that were developed during that project.
 
-CloudStore runs on Tomcat web application server and uses MySQL database. Static files and images needs to be generated with ImgGen tool.
+The application was developed in Java using the Spring framework and running on a Tomcat web application server, while using a MySQL database.
+Static files and images needs to be generated with ImgGen tool, but a default database dump and load generation scripts are available in order to start testing a deployment in a very short time.
+
+Different IaaS, PaaS, Storages and Architectures can be tested with little one little changes to the code.
 
 ## Database
 
