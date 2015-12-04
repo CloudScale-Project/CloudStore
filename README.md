@@ -7,7 +7,7 @@ Static files and images needs to be generated with ImgGen tool, but a default da
 
 Different IaaS, PaaS, Storages and Architectures can be tested with little one little changes to the code.
 
-# Deployment
+## Deployment
 
 To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
 
