@@ -88,5 +88,14 @@ $ ./populate_images
 
 Copy the directory with images to somewhere publicly available.
 
+## Development
+
+1. Download ZIP archive from GitHub
+2. Extract ZIP archive somewhere on your filesystem
+2. Open Eclipse
+3. Choose File -> Import -> General -> Existing Projects into Workspace
+4. Click Browser near ```Select root directory```
+5. Click Finish
+
 
 
