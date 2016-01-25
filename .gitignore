@@ -1,2 +1,3 @@
 src/main/resources/schema.sql
 ImgGen/generated_images/
+/target/
