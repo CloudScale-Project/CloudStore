@@ -1,1 +1,4 @@
-Please read the file ImgFiles/README.COMPILE before proceeding.
+ImgGen is used in the original TPC-W implementation by the Transaction Processing Performance Council for the generation of static material for the benchmarking application.
+It makes use of the gs graphics library version 1.7.2, and parts of the libjpeg version 6b. Their respective licenses, both open source compatible with EPL.
+
+You will find licensing information on the readme files at each directory.
