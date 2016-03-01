@@ -1,17 +1,29 @@
 ## Introduction
 
-CloudStore is an open-source e-commerce web application developed following the functional requirements defined by the [TPC-W](http://www.tpc.org/tpcw/) standard, and it's goal is to be used for the analysis of cloud characteristics of systems, such as capacity, scalability, elasticity and efficiency. It was developed as a [Showcase application](http://www.cloudscale-project.eu/about/showcase/) to validate the [CloudScale](http://www.cloudscale-project.eu/) tools that were developed during that project.
+CloudStore is an open-source sample e-commerce web application developed following the functional requirements defined by the [TPC-W](http://www.tpc.org/tpcw/) standard, and it's goal is to be used for the analysis of cloud characteristics of systems, such as capacity, scalability, elasticity and efficiency. It was developed as a [Showcase application](http://www.cloudscale-project.eu/about/showcase/) to validate the [CloudScale](http://www.cloudscale-project.eu/) tools that were developed during that EU funded project.
 
-The application was developed in Java using the [Spring framework](https://spring.io/) and running on a [Tomcat web application server](https://tomcat.apache.org/), while using a [MySQL database](https://www.mysql.com/).
-The needed static files and images can be generated with the ImgGen tool or by any other means, but a default database dump and load generation scripts are available in order to start testing a deployment in a very short time.
+The application was developed in Java using the [Spring framework](https://spring.io/) and running on a [Tomcat web application server](https://tomcat.apache.org/), while using a [MySQL database](https://www.mysql.com/). Make sure you have installed all three before attempting to run CloudStore. For compiling it you will also need [Maven](https://maven.apache.org/).
 
-Different IaaS, PaaS, Storages and Architectures can be tested with little one little changes to the code.
+It is necessary to populate the online shop with entries. The needed static files and images can be generated with the ImgGen tool or by other means, and the database can be automatically populated with a provided Java class. For convenience, a default database dump, static images and load generation scripts are available already prepared, in order to allow you to start testing a deployment in a very short time.
+
+Different IaaS, PaaS, Storages and Architectures can be tested with little one little changes to the code or configuration, but such test are not described in this document.
 
 ## Deployment
 
 To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
 
 Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
+
+### Compiling
+CloudStore is a Maven project so you will have to install the Maven tool.
+
+When you installed Maven you can compile CloudStore into a ```war``` archive by executing the following command:
+
+```bash
+$ mvn clean install
+```
+
+from the directory where the ```pom.xml``` file is located.
 
 ## Database
 
@@ -22,12 +34,13 @@ $ cd src/main/java/eu/cloudscale/showcase/generate/
 $ javac Generate.java
 $ java Generate mysql
 ```
+But first make sure you have the Spring Framework already installed.
 
-This takes a long time and it's slow. We recommend you to import a previously prepared [SQL dump](http://cloudscale.xlab.si/showcase/dumps/rds-tpcw-dump-latest.sql) into your MySQL database.
+This process can take a long time. Another option is to import a previously prepared [SQL dump](http://cloudscale.xlab.si/showcase/dumps/rds-tpcw-dump-latest.sql) into your MySQL database.
 
 ## Running
 
-For running CloudStore on your computer you will need Tomcat and MySQL database installed. 
+For running CloudStore on your computer you will need Tomcat, Spring and MySQL database installed. 
 You can also import and run CloudStore from the Eclipse IDE.
 Before you can run CloudStore on Tomcat you will need to compile it into a ```.war``` archive. but before compiling the CloudStore you need to edit some configuration files.
 
@@ -59,22 +72,19 @@ If you want to use a master-slave MySQL setup, use ```jdbc:mysql:replication://`
 
 ```jdbc.hibernate.dialect``` - Hibernate dialect
 
-### Compiling
-CloudStore is a Maven project so you will have to install the Maven tool.
-
-When you installed Maven you can compile CloudStore into a ```war``` archive by executing the following command:
-
-```bash
-$ mvn clean install
-```
-
-from the directory where the ```pom.xml``` file is located.
-
 ### Installing
 Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat.
 
 ## Using ImgGen tool
-Open file ```populate_images``` and edit:
+Firstly compile tpcwIMG (yo umight need to install some libraries if you get any such errors):
+```
+$ cd src/Showcase/ImgGen/ImgFiles
+$ make
+$ ./tpcwIMG
+```
+You should receive a message about the usage of tpcwIMG
+
+Get back to the ImgGen directory and edit the file ```populate_images``` :
 
 ```$NUM_ITEMS``` - How many items/books are in database (default: 10000)
 
@@ -82,13 +92,13 @@ Open file ```populate_images``` and edit:
 
 ```$GEN_CMD``` - Path to ```tpcwIMG``` program for generating the images (default: ImgFiles/tpcwIMG)
 
-Now run the command:
+Make sure the destination directory exists, and then run the command:
 
 ```
 $ ./populate_images
 ```
 
-Copy the directory with the images to somewhere publicly available, and as defined in your configuration.
+If not already there, copy the directory with the images to somewhere visible by Tomcat, and as defined in your configuration.
 
 You can now start CloudStore from Tomcat, and access it with your browser to test it.
 
