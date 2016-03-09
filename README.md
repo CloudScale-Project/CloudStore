@@ -8,6 +8,13 @@ It is necessary to populate the online shop with entries. The needed static file
 
 Different IaaS, PaaS, Storages and Architectures can be tested with little one little changes to the code or configuration, but such test are not described in this document.
 
+## Prerequisites
+Note that CloudStore requires the following software installed system where it will be running:
+* Java
+* Maven
+* Tomcat
+* MySQL
+
 ## Deployment
 
 To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
@@ -50,13 +57,13 @@ With the configuration files you can tell CloudStore where it can find the image
 ##### src/main/resources/app.properties
 In this file set the url for CSS, JavaScript and image files:
 
-```eu.cloudscale.files.url.css``` - URL to the folder with CSS files
+```eu.cloudscale.files.url.css``` - URL or path to folder with CSS files
 
-```eu.cloudscale.files.url.img``` - URL to the folder with image files
+```eu.cloudscale.files.url.img``` - URL or path to folder with image files
 
-```eu.cloudscale.files.url.js``` - URL to the folder with JavaScript files
+```eu.cloudscale.files.url.js``` - URL or path to folder with JavaScript files
 
-#### src/main/resources/database/database.aws.hibernate.properties
+##### src/main/resources/database/database.aws.hibernate.properties
 In this file configure the MySQL database:
 
 ```jdbc.driverClassName``` - Set to ```com.mysql.jdbc.ReplicationDriver``` if you want to use master-slave MySQL setup. Otherwise set it to ```com.mysql.jdbc.Driver``` value.
@@ -73,34 +80,7 @@ If you want to use a master-slave MySQL setup, use ```jdbc:mysql:replication://`
 ```jdbc.hibernate.dialect``` - Hibernate dialect
 
 ### Installing
-Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat.
-
-## Using ImgGen tool
-Firstly compile tpcwIMG (yo umight need to install some libraries if you get any such errors):
-```
-$ cd src/Showcase/ImgGen/ImgFiles
-$ make
-$ ./tpcwIMG
-```
-You should receive a message about the usage of tpcwIMG
-
-Get back to the ImgGen directory and edit the file ```populate_images``` :
-
-```$NUM_ITEMS``` - How many items/books are in database (default: 10000)
-
-```$DEST_DIR``` - Directory name where to save generated images
-
-```$GEN_CMD``` - Path to ```tpcwIMG``` program for generating the images (default: ImgFiles/tpcwIMG)
-
-Make sure the destination directory exists, and then run the command:
-
-```
-$ ./populate_images
-```
-
-If not already there, copy the directory with the images to somewhere visible by Tomcat, and as defined in your configuration.
-
-You can now start CloudStore from Tomcat, and access it with your browser to test it.
+Copy compiled WAR ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat ```webapps/``` directory and restart Tomcat.
 
 ## Development
 
