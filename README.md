@@ -21,7 +21,7 @@ To deploy CloudStore on public or private cloud you can use our [deployment scri
 
 Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
 
-### Installing
+## Installing
 
 **NOTICE**: The following installation instructions were tested on Ubuntu 14.04 Linux. For other platforms you may use different commands.
 
@@ -63,7 +63,7 @@ Otherwise, you can hand-install CloudStore in your computer or virtual machines,
    $ sudo service tomcat7 restart
    ```
 
-### Configuration
+## Configuration
 
 Before you can use and deploy CloudStore you need to tell CloudStore where the database is and how to connect to it. Since we are using Hibernate ORM to interact with database, CloudStore support multiple SQL databases (tested only with MySQL). We have also implemented support for MongoDB.
 
@@ -104,7 +104,16 @@ Edit file ```src/main/resources/database/database.aws.hibernate.properties``` an
   > ```
   > jdbc.url=jdbc:mysql:replication://master.example.com,replica1.example.com,replica2.example.com/tpcw?autoReconnect=true
   > ```
+  
+3. Configure JDBC credentials
 
+   ```
+   jdbc.username=<username>
+   jdbc.password=<password>
+   ```
+   
+   Replace ```<username>``` and ```<password>``` placeholders with username and password you are using to connect to database.
+   
 #### MongoDB configuration
 
 ## Database
