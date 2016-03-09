@@ -10,10 +10,10 @@ Different IaaS, PaaS, Storages and Architectures can be tested with little one l
 
 ## Prerequisites
 Note that CloudStore requires the following software installed system where it will be running:
-* Java
-* Maven
-* Tomcat
-* MySQL
+* Java JDK 6+
+* Maven 2
+* Tomcat 7
+* MySQL 5.5
 
 ## Deployment
 
@@ -21,16 +21,91 @@ To deploy CloudStore on public or private cloud you can use our [deployment scri
 
 Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
 
-### Compiling
-CloudStore is a Maven project so you will have to install the Maven tool.
+### Installing
 
-When you installed Maven you can compile CloudStore into a ```war``` archive by executing the following command:
+**NOTICE**: The following installation instructions were tested on Ubuntu 14.04 Linux. For other platforms you may use different commands.
 
-```bash
-$ mvn clean install
-```
+1. Download source code from GitHub:
 
-from the directory where the ```pom.xml``` file is located.
+   ```bash
+   $ wget https://github.com/CloudScale-Project/CloudStore/archive/v1.zip -O cloudstore.zip
+   ```
+
+2. Unpack ```cloudstore.zip```:
+
+   ```bash
+   $ unzip cloudstore.zip
+   ```
+
+3. Change directory to ```CloudStore-1```:
+
+  ```bash
+  $ cd CloudStore-1 
+  ```
+
+4. Configure the CloudStore application. See **Configuration** section of this page.
+
+4. Compile source code with Maven from directory where ```pom.xml``` file is located:
+
+   ```bash
+   $ mvn clean install
+   ```
+
+5. Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat:
+  
+   ```bash
+   $ cp target/showcase-1.0.0-BUILD-SNAPSHOT.war /var/lib/tomcat7/webapps
+   ```
+  
+6. Restart Tomcat
+
+   ```bash
+   $ sudo service tomcat7 restart
+   ```
+
+### Configuration
+
+Before you can use and deploy CloudStore you need to tell CloudStore where the database is and how to connect to it. Since we are using Hibernate ORM to interact with database, CloudStore support multiple SQL databases (tested only with MySQL). We have also implemented support for MongoDB.
+
+#### MySQL configuration
+
+Edit file ```src/main/resources/database/database.aws.hibernate.properties``` and set:
+
+1. Configure JDBC driver
+  
+  If you are **not** using replication:
+
+  ```
+  jdbc.driverClassName=com.mysql.jdbc.Driver
+  ```
+
+  If you are using replication:
+  
+  ```
+  jdbc.driverClassName=com.mysql.jdbc.ReplicationDriver
+  ```
+
+2. Configure JDBC url
+
+  If you are **not** using replication:
+  
+  ```
+  jdbc.url=jdbc:mysql://<host>/<database name>?autoReconnect=true
+  ```
+  
+  If you are using replication:
+  
+  ```
+  jdbc.url=jdbc:mysql:replication://<master hostname>,<replica1 hostname>,<replica2 hostname>/<database name>?autoReconnect=true
+  ```
+  
+  **Example:**
+  
+  > ```
+  > jdbc.url=jdbc:mysql:replication://master.example.com,replica1.example.com,replica2.example.com/tpcw?autoReconnect=true
+  > ```
+
+#### MongoDB configuration
 
 ## Database
 
