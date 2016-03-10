@@ -11,8 +11,7 @@
 			http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 	
    	<import resource="classpath:cache.xml" />
-	<import resource="classpath:hibernate.xml" />
-<!-- 	<import resource="classpath:hibernate.xml" /> -->
+	<import resource="classpath:${eu.cloudscale.datasource}.xml" />
 	<import resource="classpath:servlet-context.xml" />
 	
     <context:annotation-config /> 

@@ -23,7 +23,7 @@
 	
 	
 	<mongo:mongo host="${mongodb.host}" port="${mongodb.port}" >
-		<mongo:options connections-per-host="${connection_pool_size}"
+		<mongo:options connections-per-host="${mongodb.pool_size}"
                    	connect-timeout="30000"
 		/>
 	</mongo:mongo>

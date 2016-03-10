@@ -42,7 +42,7 @@ public class Generate
 	{
 		if( args.length < 1 )
 		{
-			System.out.println("Usage: $ java Generate <mysql|mongodb>");
+			System.out.println("Usage: $ java Generate <sql|mongodb>");
 			System.exit(0);			
 		}
 
@@ -52,9 +52,9 @@ public class Generate
     
 	    IGenerate db = (IGenerate) context.getBean("generateMongo");
 	    String db_str = "Generating for MongoDB";
-	    if(args[0].equals("mysql"))
+	    if(args[0].equals("sql"))
 	    {
-	    	db_str = "Generating for MySQL";
+	    	db_str = "Generating for SQL";
 	    	db = (IGenerate) context.getBean("generateHibernate");
 	    }
 	    System.out.println(db_str);

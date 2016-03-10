@@ -182,6 +182,7 @@
 	</dependencies>
 	<build>
 		<plugins>
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -311,6 +312,14 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.2.1</version>
+				<!-- <dependencies>
+					<dependency>
+						<groupId>eu.cloudscale</groupId>
+						<artifactId>showcase</artifactId>
+						<version>1.0.0-BUILD-SNAPSHOT</version>
+						<type>war</type>
+					</dependency>
+				</dependencies> -->
 				<configuration>
 					<executable>java</executable>
 					<arguments>
@@ -395,15 +404,15 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>amazon-hibernate</id>
+			<id>hibernate</id>
 			<properties>
 				<eu.cloudscale.environment>aws</eu.cloudscale.environment>
 				<eu.cloudscale.datasource>hibernate</eu.cloudscale.datasource>
-				<eu.cloudscale.showcase.generate.properties>classpath:database/database.aws.hibernate.properties</eu.cloudscale.showcase.generate.properties>
+				<eu.cloudscale.showcase.generate.properties>classpath:database/database.hibernate.properties</eu.cloudscale.showcase.generate.properties>
 			</properties>
 		</profile>
 		<profile>
-			<id>amazon-mongodb</id>
+			<id>mongodb</id>
 			<properties>
 				<eu.cloudscale.environment>aws</eu.cloudscale.environment>
 				<eu.cloudscale.datasource>mongodb</eu.cloudscale.datasource>
