@@ -135,7 +135,7 @@ public abstract class AGenerate implements IGenerate
 	}
 	
 	private void reinitialize(){
-		NUM_CUSTOMERS = NUM_EBS * 2880;
+		NUM_CUSTOMERS = NUM_ITEMS * 2880;
 		NUM_ADDRESSES = 2 * NUM_CUSTOMERS;
 		NUM_AUTHORS   = (int) ( .25 * NUM_ITEMS );
 		NUM_ORDERS    = (int) ( .9 * NUM_CUSTOMERS );
