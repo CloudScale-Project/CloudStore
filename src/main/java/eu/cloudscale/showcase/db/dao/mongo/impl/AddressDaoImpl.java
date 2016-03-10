@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import eu.cloudscale.showcase.db.common.ContextHelper;
 import eu.cloudscale.showcase.db.dao.IAddressDao;
 import eu.cloudscale.showcase.db.model.IAddress;
 import eu.cloudscale.showcase.db.model.mongo.Address;

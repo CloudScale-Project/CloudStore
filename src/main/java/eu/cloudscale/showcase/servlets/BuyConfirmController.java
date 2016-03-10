@@ -67,7 +67,6 @@ public class BuyConfirmController extends AController
         }
         catch ( ParseException e )
         {
-	        // TODO Auto-generated catch block
 	        e.printStackTrace();
         }
 		String shipping = request.getParameter( "SHIPPING" );

@@ -384,7 +384,6 @@ public abstract class AService implements IService
 		order.setOShipType( shipping );
 		order.setOStatus( "PENDING" );
 		order.setOTotal( calculateTotal( sc ) );
-		// TODO: order.setOSubTotal( calculateSubTotal(sc) );
 
 		order.setOSubTotal( calculateTotal( sc ) );
 		ordersDao.shrani( order );

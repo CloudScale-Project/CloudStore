@@ -83,7 +83,6 @@ public class PaymentController extends AController
         }
         catch ( ParseException e )
         {
-	        // TODO Auto-generated catch block
 	        e.printStackTrace();
         }
 		String shipping = request.getParameter( "SHIPPING" );

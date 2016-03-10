@@ -46,7 +46,6 @@ public class ShoppingCartLineDaoImpl extends DaoImpl<IShoppingCartLine> implemen
 	@Override
     public void delete(IShoppingCartLine bySCandItem)
     {
-	    // TODO Auto-generated method stub
 	    
     }
 
@@ -59,7 +58,6 @@ public class ShoppingCartLineDaoImpl extends DaoImpl<IShoppingCartLine> implemen
 	@Override
     public List<Object[]> findBySCId(Integer shoppingId)
     {
-	    // TODO Auto-generated method stub
 	    return null;
     }
     

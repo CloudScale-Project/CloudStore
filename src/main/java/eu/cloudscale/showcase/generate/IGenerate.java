@@ -24,4 +24,6 @@ public interface IGenerate
 	public void populateItemTable();
 	
 	public void populateOrdersAndCC_XACTSTable();
+
+	public void setNumItems(int numItems);
 }

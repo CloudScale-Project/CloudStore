@@ -83,22 +83,22 @@ public abstract class AGenerate implements IGenerate
 
 
 	// TODO: Move this to properties file
-	protected static final int    NUM_EBS       = 100;
+	protected static int    NUM_EBS       = 100;
 	
 	// TODO: Move this to properties file
-	protected static final int    NUM_ITEMS     = 10000;
+	protected static int    NUM_ITEMS     = 10000;
 	
 	// TODO: Move this to properties file
-	protected static final int    NUM_CUSTOMERS = NUM_EBS * 2880;
+	protected static int    NUM_CUSTOMERS = NUM_EBS * 2880;
 	
 	// TODO: Move this to properties file
-	protected static final int    NUM_ADDRESSES = 2 * NUM_CUSTOMERS;
+	protected static int    NUM_ADDRESSES = 2 * NUM_CUSTOMERS;
 	
 	// TODO: Move this to properties file
-	protected static final int    NUM_AUTHORS   = (int) ( .25 * NUM_ITEMS );
+	protected static int    NUM_AUTHORS   = (int) ( .25 * NUM_ITEMS );
 	
 	// TODO: Move this to properties file
-	protected static final int    NUM_ORDERS    = (int) ( .9 * NUM_CUSTOMERS );
+	protected static int    NUM_ORDERS    = (int) ( .9 * NUM_CUSTOMERS );
 
 	// TODO: Move this to properties file
 	protected static String[][]   tables        = {
@@ -128,7 +128,20 @@ public abstract class AGenerate implements IGenerate
 	public AGenerate()
 	{
 	}
+
+	public void setNumItems(int numItems) {
+		NUM_ITEMS = numItems;
+		reinitialize();
+	}
 	
+	private void reinitialize(){
+		NUM_CUSTOMERS = NUM_EBS * 2880;
+		NUM_ADDRESSES = 2 * NUM_CUSTOMERS;
+		NUM_AUTHORS   = (int) ( .25 * NUM_ITEMS );
+		NUM_ORDERS    = (int) ( .9 * NUM_CUSTOMERS );
+		
+		addresses = new ArrayList<IAddress>(NUM_ADDRESSES);
+	}
 	
 	protected String getRandomAString(int min, int max)
 	{

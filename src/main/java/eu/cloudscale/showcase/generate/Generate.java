@@ -23,9 +23,9 @@ public class Generate
 		
 	}
 
-	public void generate(IGenerate db)
+	public void generate(IGenerate db, int numItems)
 	{
-
+		db.setNumItems(numItems);
 		//db.dropTables( tables );
 		db.populateCountryTable();
 		db.populateAuthorTable();
@@ -40,16 +40,16 @@ public class Generate
 
 	public static void main(String[] args)
 	{
-		if( args.length < 1 )
+		if( args.length < 2 )
 		{
-			System.out.println("Usage: $ java Generate <sql|mongodb>");
+			System.out.println("Usage: $ java Generate <sql|mongodb> <number of items>");
 			System.exit(0);			
 		}
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:app-context.xml");
 		
 	    Generate generate = context.getBean(Generate.class);
-    
+	    int numItems = Integer.parseInt(args[1]);
 	    IGenerate db = (IGenerate) context.getBean("generateMongo");
 	    String db_str = "Generating for MongoDB";
 	    if(args[0].equals("sql"))
@@ -58,6 +58,6 @@ public class Generate
 	    	db = (IGenerate) context.getBean("generateHibernate");
 	    }
 	    System.out.println(db_str);
-		generate.generate(db);
+		generate.generate(db, numItems);
 	}	
 }

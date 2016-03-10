@@ -1,13 +1,14 @@
 #!/bin/bash
 
-if [ "$#" -ne 1 ]
+if [ "$#" -ne 2 ]
 then
 	echo "Illegal number of parameters"
-	echo "Usage: generate.sh <sql|mongodb>"
+	echo "Usage: generate.sh <sql> <number of items>"
 	exit 1
 fi
 
 DB_TYPE=$1
+NUM_ITEMS=$2
 
 echo "########################"
 echo "# Compiling CloudStore #"
@@ -23,10 +24,5 @@ cd src/main/java
 
 if [ $DB_TYPE == "sql" ]
 then
-	java -cp ../../../target/dependency/*:../../../target/classes/ -Deu.cloudscale.datasource=hibernate eu/cloudscale/showcase/generate/Generate sql
-fi
-
-if [ $DB_TYPE == "mongodb" ]
-then
-	java -cp ../../../target/dependency/*:../../../target/classes/ -Deu.cloudscale.datasource=mongodb eu/cloudscale/showcase/generate/Generate mongodb
+	java -cp ../../../target/dependency/*:../../../target/classes/ -Deu.cloudscale.datasource=hibernate eu/cloudscale/showcase/generate/Generate sql $NUM_ITEMS
 fi

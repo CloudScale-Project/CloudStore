@@ -57,10 +57,8 @@ public class MongoService extends AService
 		order.setOShipType( shipping );
 		order.setOStatus( "PENDING" );
 		order.setOTotal( calculateTotal( sc ) );
-		// TODO: order.setOSubTotal( calculateSubTotal(sc) );
 
 		order.setOSubTotal( calculateTotal( sc ) );
-		//ordersDao.shrani( order );
 		
 		Set<IShoppingCartLine> res = sc.getShoppingCartLines();
 		
@@ -91,7 +89,6 @@ public class MongoService extends AService
     			
     			itemDao.shrani( item );
     
-    			// TODO: Update item IStock property
     		}
 		}
 
