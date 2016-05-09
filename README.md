@@ -104,7 +104,7 @@ Edit file ```src/main/resources/database/database.hibernate.properties``` and se
 
 4. Compile source code with Maven from directory where ```pom.xml``` file is located:
 
-   **NOTE**: You must choose for which database provider you want to compile CloudStore. There are two maven profiles ```amazon-hibernate``` and ```amazon-mongodb```.
+   **NOTE**: You must choose for which database provider you want to compile CloudStore. There are two maven profiles ```hibernate``` and ```mongodb```.
    
    Example for MySQL:
    
