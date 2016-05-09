@@ -158,7 +158,7 @@ Because generating database from scratch is very slow we also provide a dump you
 
 For running CloudStore on your computer you will need Tomcat, Spring and MySQL database installed. 
 You can also import and run CloudStore from the Eclipse IDE.
-Before you can run CloudStore on Tomcat you will need to compile it into a ```.war``` archive. but before compiling the CloudStore you need to edit some configuration files.
+Before you can run CloudStore on Tomcat you will need to compile it into a ```.war``` archive. But before compiling the CloudStore you need to edit some configuration files.
 
 ### Configs
 With the configuration files you can tell CloudStore where it can find the images, and how to connect to database.
