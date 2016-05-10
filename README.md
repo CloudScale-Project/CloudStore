@@ -31,13 +31,13 @@ Edit file ```src/main/resources/database/database.hibernate.properties``` and se
 
 1. Configure JDBC driver
   
-  If you are **not** using replication:
+  **Option 1**: If you are **not** using replication:
 
   ```
   jdbc.driverClassName=com.mysql.jdbc.Driver
   ```
 
-  If you are using replication:
+  **Option 2**: If you are using replication:
   
   ```
   jdbc.driverClassName=com.mysql.jdbc.ReplicationDriver
@@ -45,13 +45,13 @@ Edit file ```src/main/resources/database/database.hibernate.properties``` and se
 
 2. Configure JDBC url
 
-  If you are **not** using replication:
+  **Option 1**: If you are **not** using replication:
   
   ```
   jdbc.url=jdbc:mysql://<host>/<database name>?autoReconnect=true
   ```
   
-  If you are using replication:
+  **Option 2**: If you are using replication:
   
   ```
   jdbc.url=jdbc:mysql:replication://<master hostname>,<replica1 hostname>,<replica2 hostname>/<database name>?autoReconnect=true
@@ -134,7 +134,7 @@ Edit file ```src/main/resources/database/database.hibernate.properties``` and se
 
 Database can be generated for both SQL and MongoDB databases or you can use existing dumps that you import into choosen database.
 
-#### Generate database for SQL databases
+#### **OPTION 1**: Generate database for SQL databases
 
 1. In ```hibernate.xml``` file make sure you have uncommented next line:
    
@@ -144,13 +144,15 @@ Database can be generated for both SQL and MongoDB databases or you can use exis
    
 2. Make sure you have edited the configuration file for database ```src/main/resources/database/database.aws.hibernate.properties```. For more information see **Configuration** section.
 
-3. Then run ```generate.sh```:
+3. Then run ```generate.sh``` which takes two parameters: ```<sql|mongo>``` and ```<number of items>```.
+
+   **For example:** if you want to generate MySQL database with 1000 items, execute command:
 
 	```
-	$ generate.sh sql
+	$ generate.sh sql 1000
 	```
 
-#### Import database for SQL databases
+#### **OPTION 2**: Import database for SQL databases
 
 Because generating database from scratch is very slow we also provide a dump you can import into database. The dump is generated for 10000 books and it's available for [download](http://cloudscale.xlab.si/showcase/dumps/rds-tpcw-dump-latest.sql)
 
