@@ -15,69 +15,6 @@ Note that CloudStore requires the following software installed system where it w
 * Tomcat 7
 * MySQL 5.5
 
-## Deployment
-
-To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
-
-Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
-
-## Configuration
-
-Before you can use and deploy CloudStore you need to tell CloudStore where the database is and how to connect to it. Since we are using Hibernate ORM to interact with database, CloudStore support multiple SQL databases (tested only with MySQL). We have also implemented support for MongoDB.
-
-#### MySQL configuration
-
-Edit file ```src/main/resources/database/database.hibernate.properties``` and set:
-
-1. Configure JDBC driver
-  
-  **Option 1**: If you are **not** using replication:
-
-  ```
-  jdbc.driverClassName=com.mysql.jdbc.Driver
-  ```
-
-  **Option 2**: If you are using replication:
-  
-  ```
-  jdbc.driverClassName=com.mysql.jdbc.ReplicationDriver
-  ```
-
-2. Configure JDBC url
-
-  **Option 1**: If you are **not** using replication:
-  
-  ```
-  jdbc.url=jdbc:mysql://<host>/<database name>?autoReconnect=true
-  ```
-  
-  **Option 2**: If you are using replication:
-  
-  ```
-  jdbc.url=jdbc:mysql:replication://<master hostname>,<replica1 hostname>,<replica2 hostname>/<database name>?autoReconnect=true
-  ```
-  
-  **Example:**
-  
-  > ```
-  > jdbc.url=jdbc:mysql:replication://master.example.com,replica1.example.com,replica2.example.com/tpcw?autoReconnect=true
-  > ```
-  
-3. Configure connection pool size
-
-   ```
-   jdbc.pool_size=150
-   ```  
-  
-3. Configure JDBC credentials
-
-   ```
-   jdbc.username=<username>
-   jdbc.password=<password>
-   ```
-   
-   Replace ```<username>``` and ```<password>``` placeholders with username and password you are using to connect to database.
-
 ## Installing
 
 **NOTICE**: The following installation instructions were tested on Ubuntu 14.04 Linux. For other platforms you may use different commands.
@@ -155,6 +92,69 @@ Database can be generated for both SQL and MongoDB databases or you can use exis
 #### **OPTION 2**: Import database for SQL databases
 
 Because generating database from scratch is very slow we also provide a dump you can import into database. The dump is generated for 10000 books and it's available for [download](http://cloudscale.xlab.si/showcase/dumps/rds-tpcw-dump-latest.sql)
+
+## Deployment
+
+To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
+
+Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
+
+## Configuration
+
+Before you can use and deploy CloudStore you need to tell CloudStore where the database is and how to connect to it. Since we are using Hibernate ORM to interact with database, CloudStore support multiple SQL databases (tested only with MySQL). We have also implemented support for MongoDB.
+
+#### MySQL configuration
+
+Edit file ```src/main/resources/database/database.hibernate.properties``` and set:
+
+1. Configure JDBC driver
+  
+  **Option 1**: If you are **not** using replication:
+
+  ```
+  jdbc.driverClassName=com.mysql.jdbc.Driver
+  ```
+
+  **Option 2**: If you are using replication:
+  
+  ```
+  jdbc.driverClassName=com.mysql.jdbc.ReplicationDriver
+  ```
+
+2. Configure JDBC url
+
+  **Option 1**: If you are **not** using replication:
+  
+  ```
+  jdbc.url=jdbc:mysql://<host>/<database name>?autoReconnect=true
+  ```
+  
+  **Option 2**: If you are using replication:
+  
+  ```
+  jdbc.url=jdbc:mysql:replication://<master hostname>,<replica1 hostname>,<replica2 hostname>/<database name>?autoReconnect=true
+  ```
+  
+  **Example:**
+  
+  > ```
+  > jdbc.url=jdbc:mysql:replication://master.example.com,replica1.example.com,replica2.example.com/tpcw?autoReconnect=true
+  > ```
+  
+3. Configure connection pool size
+
+   ```
+   jdbc.pool_size=150
+   ```  
+  
+3. Configure JDBC credentials
+
+   ```
+   jdbc.username=<username>
+   jdbc.password=<password>
+   ```
+   
+   Replace ```<username>``` and ```<password>``` placeholders with username and password you are using to connect to database.
 
 ## Running
 
