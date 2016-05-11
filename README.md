@@ -93,12 +93,6 @@ Database can be generated for both SQL and MongoDB databases or you can use exis
 
 Because generating database from scratch is very slow we also provide a dump you can import into database. The dump is generated for 10000 books and it's available for [download](http://cloudscale.xlab.si/showcase/dumps/rds-tpcw-dump-latest.sql)
 
-## Deployment
-
-To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
-
-Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
-
 ## Configuration
 
 Before you can use and deploy CloudStore you need to tell CloudStore where the database is and how to connect to it. Since we are using Hibernate ORM to interact with database, CloudStore support multiple SQL databases (tested only with MySQL). We have also implemented support for MongoDB.
@@ -158,6 +152,10 @@ Edit file ```src/main/resources/database/database.hibernate.properties``` and se
 
 ## Running
 
+To deploy CloudStore on public or private cloud you can use our [deployment scripts](https://github.com/CloudScale-Project/Deployment-Scripts). We have also developed the [distributed JMeter](https://github.com/CloudScale-Project/Distributed-Jmeter) scripts in order to load test the CloudStore.
+
+Otherwise, you can hand-install CloudStore in your computer or virtual machines, and generate load with Gatling, or manually by connecting your browser to the deployed site.
+
 For running CloudStore on your computer you will need Tomcat, Spring and MySQL database installed. 
 You can also import and run CloudStore from the Eclipse IDE.
 Before you can run CloudStore on Tomcat you will need to compile it into a ```.war``` archive. But before compiling the CloudStore you need to edit some configuration files.
@@ -190,7 +188,7 @@ If you want to use a master-slave MySQL setup, use ```jdbc:mysql:replication://`
 
 ```jdbc.hibernate.dialect``` - Hibernate dialect
 
-## Installing
+### Installing
 Copy compiled WAR ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat ```webapps/``` directory and restart Tomcat.
 
 ## Development
