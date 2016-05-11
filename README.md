@@ -172,7 +172,7 @@ In this file set the url for CSS, JavaScript and image files:
 
 ```eu.cloudscale.files.url.js``` - URL or path to folder with JavaScript files
 
-##### src/main/resources/database/database.aws.hibernate.properties
+##### src/main/resources/database/database.hibernate.properties
 In this file configure the MySQL database:
 
 ```jdbc.driverClassName``` - Set to ```com.mysql.jdbc.ReplicationDriver``` if you want to use master-slave MySQL setup. Otherwise set it to ```com.mysql.jdbc.Driver``` value.
