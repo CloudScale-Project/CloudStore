@@ -73,7 +73,7 @@ Database can be generated for both SQL and MongoDB databases or you can use exis
 
 #### **OPTION 1**: Generate database for SQL databases
 
-1. In ```hibernate.xml``` file make sure you have uncommented next line:
+1. In ```src/main/resources/hibernate.xml``` file make sure the following line is uncommented:
    
    ```
    <prop key="hibernate.hbm2ddl.auto">update</prop>
