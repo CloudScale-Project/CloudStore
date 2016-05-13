@@ -31,10 +31,10 @@ Note that CloudStore requires the following software installed system where it w
    $ unzip cloudstore.zip
    ```
 
-3. Change directory to ```CloudStore-1```:
+3. Change directory to ```CloudStore-2```:
 
   ```bash
-  $ cd CloudStore-1 
+  $ cd CloudStore-2
   ```
 
 4. Configure the CloudStore application. See **Configuration** section of this page.
