@@ -58,7 +58,7 @@ Note that CloudStore requires the following software installed system where it w
 5. Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat:
   
    ```bash
-   $ cp target/showcase-1.0.0-BUILD-SNAPSHOT.war /var/lib/tomcat7/webapps
+   $ sudo cp target/showcase-1.0.0-BUILD-SNAPSHOT.war /var/lib/tomcat7/webapps
    ```
   
 6. Restart Tomcat
