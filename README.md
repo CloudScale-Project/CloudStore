@@ -22,7 +22,7 @@ Note that CloudStore requires the following software installed system where it w
 1. Download source code from GitHub:
 
    ```bash
-   $ wget https://github.com/CloudScale-Project/CloudStore/archive/v1.zip -O cloudstore.zip
+   $ wget https://github.com/CloudScale-Project/CloudStore/archive/v2.zip -O cloudstore.zip
    ```
 
 2. Unpack ```cloudstore.zip```:
