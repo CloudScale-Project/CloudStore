@@ -79,7 +79,7 @@ Database can be generated for both SQL and MongoDB databases or you can use exis
    <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
    ```
    
-2. Make sure you have edited the configuration file for database ```src/main/resources/database/database.aws.hibernate.properties```. For more information see **Configuration** section.
+2. Make sure you have edited the configuration file for database ```src/main/resources/database/database.hibernate.properties```. For more information see **Configuration** section.
 
 3. Then run ```generate.sh``` which takes two parameters: ```<sql|mongo>``` and ```<number of items>```.
 
