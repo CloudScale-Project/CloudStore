@@ -76,7 +76,7 @@ Database can be generated for both SQL and MongoDB databases or you can use exis
 1. In ```src/main/resources/hibernate.xml``` file make sure the following line is uncommented:
    
    ```
-   <prop key="hibernate.hbm2ddl.auto">update</prop>
+   <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
    ```
    
 2. Make sure you have edited the configuration file for database ```src/main/resources/database/database.aws.hibernate.properties```. For more information see **Configuration** section.
