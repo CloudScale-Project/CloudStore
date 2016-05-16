@@ -8,6 +8,8 @@ It is necessary to populate the online shop with entries. The needed static file
 
 Different IaaS, PaaS, Storages and Architectures can be tested with little one little changes to the code or configuration, but such test are not described in this document.
 
+**NOTE**: In source code you will find support for MongoDB. This feature is in alpha development stage and it's not ready for production usage. 
+
 ## Prerequisites
 Note that CloudStore requires the following software installed system where it will be running:
 * Java JDK 6+
@@ -37,39 +39,37 @@ Note that CloudStore requires the following software installed system where it w
   $ cd CloudStore-2
   ```
 
-4. Configure the CloudStore application. See **Configuration** section of this page.
+4. Generate or import database. See (**Database**)[#database] section of this page.
 
-4. Compile source code with Maven from directory where ```pom.xml``` file is located:
+5. Configure the CloudStore application. See (**Configuration**)[#configuration] section of this page.
 
-   **NOTE**: You must choose for which database provider you want to compile CloudStore. There are two maven profiles ```hibernate``` and ```mongodb```.
-   
-   Example for MySQL:
+6. Compile source code with Maven from directory where ```pom.xml``` file is located:
    
    ```bash
    $ mvn clean install -Phibernate
    ```
-   
-   Example for MongoDB:
-   
-   ```bash
-   $ mvn clean install -Pmongodb
-   ```
 
-5. Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat:
+7. Copy ```target/showcase-1.0.0-BUILD-SNAPSHOT.war``` to Tomcat:
   
    ```bash
-   $ sudo cp target/showcase-1.0.0-BUILD-SNAPSHOT.war /var/lib/tomcat7/webapps
+   $ sudo cp target/showcase-1.0.0-BUILD-SNAPSHOT.war /var/lib/tomcat7/webapps/cloudstore.war
    ```
   
-6. Restart Tomcat
+8. Restart Tomcat
 
    ```bash
    $ sudo service tomcat7 restart
    ```	
+  
+9. Open application in browser typing the following URL to your browser:
+
+   ```
+   http://localhost:8080/cloudstore
+   ```
 
 ## Database
 
-Database can be generated for both SQL and MongoDB databases or you can use existing dumps that you import into choosen database.
+Database can be manually generated or you can use existing dump that you can import into database.
 
 #### **OPTION 1**: Generate database for SQL databases
 
