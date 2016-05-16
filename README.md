@@ -39,9 +39,9 @@ Note that CloudStore requires the following software installed system where it w
   $ cd CloudStore-2
   ```
 
-4. Generate or import database. See (**Database**)[#database] section of this page.
+4. Generate or import database. See [**Database**](#database) section of this page.
 
-5. Configure the CloudStore application. See (**Configuration**)[#configuration] section of this page.
+5. Configure the CloudStore application. See [**Configuration**](#configuration) section of this page.
 
 6. Compile source code with Maven from directory where ```pom.xml``` file is located:
    
