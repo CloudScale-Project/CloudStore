@@ -12,7 +12,7 @@ Different IaaS, PaaS, Storages and Architectures can be tested with little one l
 
 ## Prerequisites
 Note that CloudStore requires the following software installed system where it will be running:
-* Java JDK 6+
+* Java JDK 6 or 7 (it doesn't work with JDK 8)
 * Maven 2
 * Tomcat 7
 * MySQL 5.5
